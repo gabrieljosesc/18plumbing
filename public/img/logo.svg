@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" role="img" aria-label="18 Plumbing logo">
+  <circle cx="110" cy="110" r="98" fill="#ffffff"/>
+  <circle cx="110" cy="110" r="98" fill="none" stroke="#04849C" stroke-width="13"/>
+  <text x="110" y="103" text-anchor="middle" font-family="Montserrat, Arial Black, Arial, sans-serif"
+        font-weight="800" font-size="52" fill="#2C4478" letter-spacing="1">18</text>
+  <text x="110" y="150" text-anchor="middle" font-family="Montserrat, Arial Black, Arial, sans-serif"
+        font-weight="800" font-size="40" fill="#2C4478" letter-spacing="-0.5">PLUMBING</text>
+</svg>
