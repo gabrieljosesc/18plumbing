@@ -1,16 +1,17 @@
-import { site } from "@/lib/site";
-import { PhoneIcon } from "./Icons";
+import { CallButton, TextButton } from "./CallButton";
 
 /** Fixed call / quote bar pinned to the bottom of the screen on phones. */
 export default function CallBar() {
   return (
     <div className="callbar">
-      <a className="btn btn--primary" href={site.phoneHref}>
-        <PhoneIcon />
+      <CallButton className="btn btn--primary" location="mobile-bar">
         Call now
-      </a>
-      <a className="btn btn--outline" href="#contact">
-        Get a quote
+      </CallButton>
+      <TextButton className="btn btn--outline" location="mobile-bar">
+        Text
+      </TextButton>
+      <a className="btn btn--outline" href="/#contact">
+        Quote
       </a>
     </div>
   );

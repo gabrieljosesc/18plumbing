@@ -45,6 +45,13 @@ export const site = {
   phoneHref: "tel:+16476183079",
   phoneE164: "+1-647-618-3079",
 
+  /**
+   * Text-message link. Assumes 647-618-3079 can receive SMS — if it is a
+   * landline, the Text us buttons will silently do nothing on desktop and
+   * open an unsendable draft on mobile, so check before relying on it.
+   */
+  smsHref: "sms:+16476183079",
+
   email: "info@18plumbing.ca",
   emailHref: "mailto:info@18plumbing.ca",
 

@@ -34,6 +34,45 @@ const password = z
   .min(8, "Use at least 8 characters.")
   .max(72, "Passwords are limited to 72 characters.");
 
+/** The lead form — the "will not phone" path. */
+export const leadSchema = z.object({
+  fullName: z
+    .string()
+    .trim()
+    .min(2, "Please enter your name.")
+    .max(120, "That name is too long."),
+
+  phone: z
+    .string()
+    .trim()
+    .min(7, "Please enter a phone number we can reach you on.")
+    .max(40, "That phone number is too long."),
+
+  email: z
+    .union([z.literal(""), z.email("That email address does not look right.")])
+    .nullish()
+    .transform((value) => (value ? value : null)),
+
+  // Canadian postal codes, with or without the space. Loose on purpose —
+  // rejecting a real customer over formatting costs more than a messy record.
+  postalCode: z
+    .string()
+    .trim()
+    .min(3, "Please enter your postal code.")
+    .max(12, "That postal code is too long.")
+    .transform((value) => value.toUpperCase().replace(/\s+/g, " ")),
+
+  problem: z
+    .string()
+    .trim()
+    .min(5, "Tell us briefly what is going wrong.")
+    .max(4000, "Please trim this down a little."),
+
+  service: z.string().trim().max(120).nullish().transform((v) => (v ? v : null)),
+  sourceSlug: z.string().trim().max(120).nullish().transform((v) => (v ? v : null)),
+  attribution: z.string().trim().max(2000).nullish().transform((v) => (v ? v : null)),
+});
+
 /** The free priority list — no password, just enough to find the property. */
 export const priorityListSchema = z.object({
   fullName: z

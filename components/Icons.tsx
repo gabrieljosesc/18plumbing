@@ -106,6 +106,24 @@ export function ChevronRightIcon(props: IconProps) {
   );
 }
 
+export function MessageIcon(props: IconProps) {
+  return (
+    <svg {...outline} {...props}>
+      <path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 9 9 0 0 1-3.8-.8L3 21l1.9-5a8.4 8.4 0 0 1-.8-3.7 8.4 8.4 0 0 1 8.4-8.4h.5a8.4 8.4 0 0 1 8 8z" />
+    </svg>
+  );
+}
+
+export function UploadIcon(props: IconProps) {
+  return (
+    <svg {...outline} {...props}>
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <path d="m17 8-5-5-5 5" />
+      <path d="M12 3v13" />
+    </svg>
+  );
+}
+
 export function TagIcon(props: IconProps) {
   return (
     <svg {...outline} {...props}>

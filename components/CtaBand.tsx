@@ -1,5 +1,4 @@
-import { site } from "@/lib/site";
-import { PhoneIcon } from "./Icons";
+import { CallButton, TextButton } from "./CallButton";
 
 export default function CtaBand() {
   return (
@@ -10,13 +9,8 @@ export default function CtaBand() {
           Call now and speak to a licensed plumber. Lines are open 24 hours, every day.
         </p>
         <div className="cta-band__actions">
-          <a className="btn btn--white" href={site.phoneHref}>
-            <PhoneIcon />
-            {site.phone}
-          </a>
-          <a className="btn btn--ghost-light" href={site.emailHref}>
-            {site.email}
-          </a>
+          <CallButton className="btn btn--white" location="cta-band" />
+          <TextButton className="btn btn--ghost-light" location="cta-band" />
         </div>
       </div>
     </section>

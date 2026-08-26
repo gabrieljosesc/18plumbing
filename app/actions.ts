@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import {
   inspectionSchema,
   keepValues,
+  leadSchema,
   priorityListSchema,
   loginSchema,
   signupSchema,
@@ -105,6 +106,118 @@ export async function signUp(
       `Almost there — we sent a confirmation link to ${parsed.data.email}. ` +
       "Click it to confirm your email, then we will call to set up payment " +
       "and switch your benefits on.",
+  };
+}
+
+/* --------------------------------------------------------- lead form */
+
+const MAX_PHOTOS = 3;
+const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+const ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic"];
+
+/**
+ * Handles a quote request from the lead form, including any photos.
+ *
+ * Photos go to the private `lead-photos` bucket and only their storage paths
+ * are recorded — never public URLs, since the bucket has no read policy.
+ */
+export async function submitLead(
+  _previous: AuthFormState,
+  formData: FormData,
+): Promise<AuthFormState> {
+  if (formData.get("company")) {
+    return { status: "success", message: "Thanks — we have got it." };
+  }
+
+  const parsed = leadSchema.safeParse({
+    fullName: formData.get("fullName"),
+    phone: formData.get("phone"),
+    email: formData.get("email"),
+    postalCode: formData.get("postalCode"),
+    problem: formData.get("problem"),
+    service: formData.get("service"),
+    sourceSlug: formData.get("sourceSlug"),
+    attribution: formData.get("attribution"),
+  });
+
+  const keep = keepValues(formData, [
+    "fullName",
+    "phone",
+    "email",
+    "postalCode",
+    "problem",
+  ]);
+
+  if (!parsed.success) {
+    return {
+      status: "error",
+      message: "Please check the highlighted fields.",
+      fieldErrors: toFieldErrors(parsed.error),
+      values: keep,
+    };
+  }
+
+  const supabase = await createClient();
+  const headerList = await headers();
+
+  // Upload photos first. A failed upload must not lose the lead, so anything
+  // that goes wrong here is logged and the enquiry is saved without it.
+  const photoPaths: string[] = [];
+  const photos = formData
+    .getAll("photos")
+    .filter((entry): entry is File => entry instanceof File && entry.size > 0)
+    .slice(0, MAX_PHOTOS);
+
+  for (const [index, photo] of photos.entries()) {
+    if (photo.size > MAX_PHOTO_BYTES) continue;
+    if (!ALLOWED_PHOTO_TYPES.includes(photo.type)) continue;
+
+    const extension = photo.type.split("/")[1]?.replace("jpeg", "jpg") ?? "jpg";
+    const path = `${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}-${index}.${extension}`;
+
+    const { error } = await supabase.storage
+      .from("lead-photos")
+      .upload(path, photo, { contentType: photo.type, upsert: false });
+
+    if (error) {
+      console.error("submitLead: photo upload failed", error);
+      continue;
+    }
+    photoPaths.push(path);
+  }
+
+  const { error } = await supabase.from("leads").insert({
+    full_name: parsed.data.fullName,
+    phone: parsed.data.phone,
+    email: parsed.data.email,
+    postal_code: parsed.data.postalCode,
+    problem: parsed.data.problem,
+    service: parsed.data.service,
+    source_slug: parsed.data.sourceSlug,
+    source_page: headerList.get("referer"),
+    photo_paths: photoPaths,
+    notes: parsed.data.attribution ? `Attribution: ${parsed.data.attribution}` : null,
+  });
+
+  if (error) {
+    console.error("submitLead: insert failed", error);
+    return {
+      status: "error",
+      message: `Sorry, that did not send. ${FALLBACK}`,
+      values: keep,
+    };
+  }
+
+  const photoNote =
+    photos.length > photoPaths.length
+      ? " (some photos could not be attached, but we have your details)"
+      : "";
+
+  return {
+    status: "success",
+    message:
+      `Got it${photoNote} — we will call you on ${parsed.data.phone} shortly. ` +
+      `If it is urgent, ring ${site.phone} and we will pick up.`,
   };
 }
 

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Montserrat } from "next/font/google";
-import { credentials, faqs, pricing, services, serviceAreas, site } from "@/lib/site";
+import Analytics from "@/components/Analytics";
+import { credentials, pricing, services, serviceAreas, site } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -129,17 +130,6 @@ const localBusinessJsonLd = {
   },
 };
 
-/** Answers the questions people type before they call. */
-const faqJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqs.map((faq) => ({
-    "@type": "Question",
-    name: faq.question,
-    acceptedAnswer: { "@type": "Answer", text: faq.answer },
-  })),
-};
-
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-CA" className={`${inter.variable} ${montserrat.variable}`}>
@@ -148,14 +138,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to content
         </a>
         {children}
+        <Analytics />
         <script
           type="application/ld+json"
           // Static objects built above — no user input reaches these.
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
         />
       </body>
     </html>

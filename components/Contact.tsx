@@ -1,4 +1,6 @@
 import Link from "next/link";
+import LeadForm from "./LeadForm";
+import { CallButton, TextButton } from "./CallButton";
 import { pricing, site } from "@/lib/site";
 import { ClockIcon, MailIcon, PhoneIcon, PinIcon } from "./Icons";
 
@@ -59,34 +61,22 @@ export default function Contact({ signedIn }: { signedIn: boolean }) {
           </ul>
         </div>
 
-        <div className="contact-panel reveal">
-          <h3>Call now</h3>
-          <p>
-            Blocked drain, burst pipe or a tap that will not stop — talk to a licensed
-            plumber straight away.
-          </p>
-          <a className="btn btn--primary btn--block" href={site.phoneHref}>
-            <PhoneIcon />
-            {site.phone}
-          </a>
-          <a className="btn btn--outline btn--block" href={site.emailHref}>
-            Email {site.email}
-          </a>
+        <div className="reveal">
+          <LeadForm />
 
-          <hr />
-
-          <h3>{signedIn ? "Your membership" : "Not a member yet?"}</h3>
-          <p>
-            {signedIn
-              ? "Book your annual inspection and check your member number in your account."
-              : `Members get an annual inspection, ${pricing.labourDiscount}% off labour, no emergency call-out fee and front of the queue — $${pricing.plan.annual} a year.`}
-          </p>
-          <Link
-            className="btn btn--navy btn--block"
-            href={signedIn ? "/account" : "/#membership"}
-          >
-            {signedIn ? "Go to my account" : "See the plan"}
-          </Link>
+          <div className="contact-after">
+            <p>
+              {signedIn
+                ? "Members: book your annual inspection from your account."
+                : `Members get an annual inspection, ${pricing.labourDiscount}% off labour and no emergency call-out fee — $${pricing.plan.annual} a year.`}
+            </p>
+            <Link
+              className="btn btn--outline"
+              href={signedIn ? "/account" : "/#membership"}
+            >
+              {signedIn ? "Go to my account" : "See the plan"}
+            </Link>
+          </div>
         </div>
       </div>
     </section>

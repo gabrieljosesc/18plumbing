@@ -1,5 +1,6 @@
 import { pricing, site } from "@/lib/site";
-import { ClockIcon, PhoneIcon, PinIcon, ShieldIcon, StarIcon, Stars } from "./Icons";
+import { CallButton, TextButton } from "./CallButton";
+import { ClockIcon, PinIcon, ShieldIcon, StarIcon, Stars } from "./Icons";
 
 export default function Hero() {
   return (
@@ -21,12 +22,10 @@ export default function Hero() {
           </p>
 
           <div className="hero__actions">
-            <a className="btn btn--primary" href={site.phoneHref}>
-              <PhoneIcon />
-              Call {site.phone}
-            </a>
-            <a className="btn btn--ghost-light" href="#membership">
-              See the plan
+            <CallButton className="btn btn--primary" location="hero" />
+            <TextButton className="btn btn--ghost-light" location="hero" />
+            <a className="btn btn--ghost-light" href="#contact">
+              Request a quote
             </a>
           </div>
 
