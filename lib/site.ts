@@ -6,11 +6,40 @@
  * from the old Gmail account to info@18plumbing.ca.
  */
 
+/**
+ * The origin this site is actually served from.
+ *
+ * Everything SEO reads from here — canonical URL, Open Graph tags, sitemap and
+ * the LocalBusiness structured data. Pointing it at a domain that does not
+ * resolve is worse than having no canonical at all: Google follows it, finds
+ * nothing, and can drop the page from the index entirely.
+ *
+ * So it resolves in order of how much we trust it:
+ *   1. NEXT_PUBLIC_SITE_URL   — set this once a custom domain is live
+ *   2. Vercel's production URL — injected automatically, always correct
+ *   3. localhost              — dev
+ *
+ * Deliberately no hardcoded fallback to 18plumbing.ca: that domain is
+ * registered but has no DNS record yet, and hardcoding it is exactly how the
+ * canonical ends up pointing somewhere dead.
+ */
+function resolveSiteUrl(): string {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL;
+  if (explicit) return explicit.replace(/\/+$/, "");
+
+  const vercel =
+    process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL ??
+    process.env.NEXT_PUBLIC_VERCEL_URL;
+  if (vercel) return `https://${vercel.replace(/^https?:\/\//, "").replace(/\/+$/, "")}`;
+
+  return "http://localhost:3000";
+}
+
 export const site = {
   name: "18 Plumbing",
   legalName: "18 Plumbing",
   tagline: "Installation · Maintenance · Repair",
-  url: "https://18plumbing.ca",
+  url: resolveSiteUrl(),
 
   phone: "647-618-3079",
   phoneHref: "tel:+16476183079",

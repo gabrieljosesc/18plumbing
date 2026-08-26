@@ -257,18 +257,30 @@ supabase/migrations/
 ## Deploying
 
 Standard Next.js output, needs a Node host — Vercel is the least-effort option.
-Set these in the host:
+Currently live at **https://18plumbing.vercel.app**.
+
+Environment variables to set in the host:
 
 ```
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 ```
 
+`NEXT_PUBLIC_SITE_URL` is optional. Left unset, the site uses whatever domain
+Vercel is serving it from, which is always correct. Set it only when you want to
+pin a specific origin — e.g. `https://18plumbing.ca` once that domain is live.
+
 Then, in **Supabase → Authentication → URL Configuration**, add the production
 domain to **Site URL** and **Redirect URLs**. Confirmation emails point at
-whatever host served the signup request, so without this the links will keep
-pointing at localhost.
+whatever host served the signup request, but Supabase rejects any redirect not
+on that allowlist and falls back to Site URL.
 
-Finally, point `site.url` in `lib/site.ts` at the real domain if it ever changes
-from `https://18plumbing.ca` — canonical URL, Open Graph tags, sitemap and
-structured data all read from it.
+### The 18plumbing.ca domain
+
+The domain is registered (nameservers at ClouDNS) but has **no A record**, so it
+does not resolve. Until it points at Vercel, the site should stay on the
+`.vercel.app` domain — which it now does automatically.
+
+To switch it over: add `18plumbing.ca` in Vercel → Settings → Domains, follow
+the DNS records it gives you, then add the domain to Supabase's Redirect URLs.
+Nothing in the code needs to change.
