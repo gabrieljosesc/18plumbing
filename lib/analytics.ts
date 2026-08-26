@@ -8,7 +8,6 @@
  *   NEXT_PUBLIC_GOOGLE_ADS_ID             e.g. AW-123456789
  *   NEXT_PUBLIC_ADS_CALL_LABEL            conversion label for a phone click
  *   NEXT_PUBLIC_ADS_LEAD_LABEL            conversion label for a form submit
- *   NEXT_PUBLIC_CALL_TRACKING_NUMBER      CallRail (or similar) display number
  */
 
 export const analytics = {
