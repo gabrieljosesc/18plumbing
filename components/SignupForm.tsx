@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { signUp } from "@/app/actions";
 import { initialAuthState } from "@/lib/auth-schema";
+import { planOptions, pricing, type PlanValue } from "@/lib/site";
 import Field from "./Field";
 import FormStatus from "./FormStatus";
 
@@ -17,12 +18,15 @@ function SubmitButton() {
   );
 }
 
-export default function SignupForm() {
+export default function SignupForm({ initialPlan }: { initialPlan: PlanValue }) {
   const [state, formAction] = useActionState(signUp, initialAuthState);
   const err = (field: string) => state.fieldErrors?.[field];
   // React resets the form to these once the action settles, which is exactly
   // what restores a rejected submission instead of blanking it.
   const kept = (field: string) => state.values?.[field] ?? "";
+
+  const keptPlan = state.values?.plan as PlanValue | undefined;
+  const [plan, setPlan] = useState<PlanValue>(keptPlan ?? initialPlan);
 
   // Once the confirmation email is away, the form has nothing left to do.
   if (state.status === "success") {
@@ -47,13 +51,38 @@ export default function SignupForm() {
 
   return (
     <div className="auth-card">
-      <h1>Become a member</h1>
+      <h1>Join the plan</h1>
       <p className="auth-lede">
-        Priority scheduling, a free yearly inspection and a standing discount on
-        every job. No fee to join.
+        Annual inspection, {pricing.labourDiscount}% off labour, no emergency
+        call-out fee, tank flush and front of the queue.
       </p>
 
       <form action={formAction} noValidate>
+        <fieldset className="plan-picker">
+          <legend>Choose your billing</legend>
+          {planOptions.map((option) => (
+            <label
+              key={option.value}
+              className={plan === option.value ? "plan-opt is-picked" : "plan-opt"}
+            >
+              <input
+                type="radio"
+                name="plan"
+                value={option.value}
+                checked={plan === option.value}
+                onChange={() => setPlan(option.value)}
+              />
+              <span className="plan-opt__body">
+                <span className="plan-opt__label">{option.label}</span>
+                <span className="plan-opt__price">
+                  {option.price} <small>{option.per}</small>
+                </span>
+                <span className="plan-opt__note">{option.note}</span>
+              </span>
+            </label>
+          ))}
+        </fieldset>
+
         <Field
           name="fullName"
           defaultValue={kept("fullName")}
@@ -113,6 +142,10 @@ export default function SignupForm() {
         </div>
 
         <SubmitButton />
+        <p className="form-note">
+          No card needed now — we take payment over the phone and switch your
+          benefits on.
+        </p>
         <FormStatus state={state} />
       </form>
 

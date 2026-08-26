@@ -248,6 +248,8 @@ function ValveIcon(props: IconProps) {
   );
 }
 
+export { TankIcon, DropIcon };
+
 /** Lookup used by the services grid, keyed by `Service.icon`. */
 export const serviceIcons: Record<string, (props: IconProps) => React.JSX.Element> = {
   pipe: PipeIcon,

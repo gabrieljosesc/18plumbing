@@ -33,42 +33,79 @@ project.
 
 ---
 
-## Membership
+## Membership — two tiers
 
-Members get three things, and these are stated in exactly one place —
-`memberBenefits` in [`lib/site.ts`](lib/site.ts):
+Both live in [`lib/site.ts`](lib/site.ts). Change a price or a benefit there and
+it updates the page, the signup form, the account dashboard and the structured
+data at once.
 
-1. **Priority scheduling** — they quote their member number on the phone
-2. **Free yearly plumbing inspection** — booked from their account page
-3. **Discount on services** — applied to their invoice
+### Free — the priority list
 
-### Pages
+Name, phone, address. No password, no account, no card. It is lead capture:
+rows land in `priority_list` and you work them from the Supabase Table Editor
+(`status` moves `new` → `contacted` → `converted`).
 
-| Route     | What it is                                                     |
-| --------- | -------------------------------------------------------------- |
-| `/`       | Marketing page, with a Membership section that swaps CTAs depending on whether you are signed in |
-| `/signup` | Create an account — name, email, phone, service address, password |
-| `/login`  | Member sign in                                                  |
-| `/account`| Member dashboard — member card, details, benefits, inspection booking and history |
-| `/auth/confirm` | Lands the confirmation link from the signup email          |
+### Paid — the plan
 
-`/account` is guarded in [`middleware.ts`](middleware.ts), which also refreshes
-the session cookie on every request. Signed-in visitors hitting `/login` or
-`/signup` bounce to `/account`.
+**$15/month or $180/year.** Five benefits: annual inspection, 15% off labour,
+no emergency call-out fee, hot water tank flush, front of the queue.
 
-### How signup works
+Signup creates a real account but sets `membership_status = 'pending'`. The
+dashboard then shows a "one step left" panel and **hides the inspection booking
+form** until you take payment and flip the profile to `active` in Supabase.
+That gating is deliberate: nobody books a free inspection without paying first.
 
-1. `signUp` in [`app/actions.ts`](app/actions.ts) validates with Zod and calls
-   `supabase.auth.signUp`, passing name / phone / address as user metadata.
-2. Supabase emails a confirmation link.
-3. A Postgres trigger (`handle_new_user`) creates the `profiles` row from that
-   metadata and assigns a member number — `18P-1001`, `18P-1002`, and so on.
-4. Clicking the link hits `/auth/confirm`, which verifies the token and drops
-   the member on `/account`.
+There is no Stripe integration — you take payment over the phone, which matches
+selling the plan after a job. Adding Stripe later means changing how
+`membership_status` gets set to `active`, and nothing else.
 
-Forms echo back everything except passwords when a submission is rejected.
-React 19 resets an uncontrolled form once its action settles, so without this a
-failed signup would wipe every field the visitor had filled in.
+### Activating a member
+
+Supabase → Table Editor → `profiles` → set `membership_status` to `active`.
+Their benefits and booking form appear on next page load.
+
+---
+
+## SEO
+
+Already in place:
+
+- **LocalBusiness (`Plumber`) schema** — hours, phone, service area, rating,
+  social profiles, price range, plus a service catalogue built from your eight
+  services and the membership as a priced offer
+- **FAQPage schema** — all eight FAQ answers, eligible for rich results
+- **Sitemap and robots.txt** — generated at `/sitemap.xml` and `/robots.txt`
+- **FAQ section** — plain `<details>` elements, so Google reads every answer
+  whether or not it is expanded
+- **Price anchor** — "$89 diagnostic, waived if we do the work" in the hero and
+  the FAQ
+
+### Reviews — the highest-leverage thing on this list
+
+10 reviews will not outrank established competitors; 30+ starts to. The site now
+has a "Leave a review" button in the Reviews section, but the real win is texting
+the link after every single job.
+
+`site.reviewUrl` currently points at the listing, so the customer taps "Write a
+review" themselves — one extra tap. **Google's one-tap link is better and it is
+worth two minutes to get it:** Business Profile → *Ask for reviews* → copy the
+`https://g.page/r/…/review` link → paste it into `site.reviewUrl`. That link
+cannot be derived from the public listing, which is why it is not already set.
+
+---
+
+## ⚠️ What still needs you
+
+Three things are stubbed because they cannot be invented:
+
+| What | Where | Why it matters |
+| ---- | ----- | -------------- |
+| **Licence number** | `credentials.licenceNumber` in `lib/site.ts` | Currently `null`, so the licence line and the schema credential are omitted entirely. A real number is a strong trust signal — a made-up one is a liability. |
+| **Photo of Charles / the team** | `credentials.teamPhoto` | Also `null`, so the "Who turns up" section renders text-only. Drop a real photo at `public/img/team.jpg` and set the value. Faces convert; stock photos of strangers do the opposite. |
+| **Google review short link** | `site.reviewUrl` | See above. |
+
+All three degrade gracefully — the site is correct and complete without them,
+it just converts less well.
 
 ---
 
@@ -99,7 +136,11 @@ Almost all copy and business data sits in [`lib/site.ts`](lib/site.ts).
 | ----------------- | ------------------------------------------------------ |
 | `site`            | Name, phone, email, hours, social links, Google rating |
 | `services`        | The eight service cards                                |
-| `memberBenefits`  | The three membership perks                             |
+| `pricing`         | Diagnostic fee, plan prices, labour discount           |
+| `planBenefits`    | The five paid-plan perks                               |
+| `priorityListBenefits` | What the free list gets you                       |
+| `faqs`            | FAQ copy, also emitted as FAQPage schema              |
+| `credentials`     | Licence number and team photo (both currently null)   |
 | `inspectionTimes` | Time windows in the booking form                       |
 | `serviceAreas`    | Cities in the Service Area section                     |
 | `gallery`         | Job photos with alt text and captions                  |
@@ -144,11 +185,15 @@ Fonts are Montserrat (headings) and Inter (body), via `next/font`.
 
 ## Database
 
-Two tables, both with RLS on.
+Three tables, all with RLS on.
 
-**`profiles`** — one row per member, created by trigger on signup. Holds name,
-phone, address, `member_number`, `member_since` and `membership_status`
-(`active` / `paused` / `cancelled`).
+**`priority_list`** — free-tier leads. Insert-only from the browser: anyone can
+add themselves, nobody can read the list back.
+
+**`profiles`** — one row per paid-plan member, created by trigger on signup.
+Holds name, phone, address, `member_number`, `member_since`, `plan`
+(`monthly` / `annual`) and `membership_status`
+(`pending` / `active` / `paused` / `cancelled`).
 
 **`inspection_requests`** — free-inspection bookings. `status` moves through
 `requested` → `scheduled` → `completed`, or `cancelled`. You work these from the

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { site } from "@/lib/site";
+import { pricing, site } from "@/lib/site";
 import { ClockIcon, MailIcon, PhoneIcon, PinIcon } from "./Icons";
 
 export default function Contact({ signedIn }: { signedIn: boolean }) {
@@ -78,14 +78,14 @@ export default function Contact({ signedIn }: { signedIn: boolean }) {
           <h3>{signedIn ? "Your membership" : "Not a member yet?"}</h3>
           <p>
             {signedIn
-              ? "Book your free yearly inspection and check your member number in your account."
-              : "Members get priority scheduling, a free yearly inspection and a discount on every job. It is free to join."}
+              ? "Book your annual inspection and check your member number in your account."
+              : `Members get an annual inspection, ${pricing.labourDiscount}% off labour, no emergency call-out fee and front of the queue — $${pricing.plan.annual} a year.`}
           </p>
           <Link
             className="btn btn--navy btn--block"
-            href={signedIn ? "/account" : "/signup"}
+            href={signedIn ? "/account" : "/#membership"}
           >
-            {signedIn ? "Go to my account" : "Become a member"}
+            {signedIn ? "Go to my account" : "See the plan"}
           </Link>
         </div>
       </div>

@@ -34,6 +34,41 @@ const password = z
   .min(8, "Use at least 8 characters.")
   .max(72, "Passwords are limited to 72 characters.");
 
+/** The free priority list — no password, just enough to find the property. */
+export const priorityListSchema = z.object({
+  fullName: z
+    .string()
+    .trim()
+    .min(2, "Please enter your name.")
+    .max(120, "That name is too long."),
+
+  phone: z
+    .string()
+    .trim()
+    .min(7, "Please enter a phone number we can reach you on.")
+    .max(40, "That phone number is too long."),
+
+  address: z
+    .string()
+    .trim()
+    .min(5, "Please enter the address we would be servicing.")
+    .max(300, "That address is too long."),
+
+  // .nullish(), not .optional(): FormData.get() returns null for a field that
+  // is not rendered at all, and .optional() only tolerates undefined.
+  email: z
+    .union([z.literal(""), z.email("That email address does not look right.")])
+    .nullish()
+    .transform((value) => (value ? value : null)),
+
+  notes: z
+    .string()
+    .trim()
+    .max(2000, "Please keep this under 2000 characters.")
+    .nullish()
+    .transform((value) => (value ? value : null)),
+});
+
 export const signupSchema = z
   .object({
     fullName: z
@@ -58,6 +93,9 @@ export const signupSchema = z
 
     password,
     confirmPassword: z.string(),
+
+    // Which plan they picked on the way in. Staff activate after payment.
+    plan: z.enum(["monthly", "annual"]),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "The two passwords do not match.",
@@ -78,19 +116,19 @@ export const inspectionSchema = z.object({
 
   preferredDate: z
     .union([z.literal(""), z.iso.date("Please pick a valid date.")])
-    .optional()
+    .nullish()
     .transform((value) => (value ? value : null)),
 
   preferredTime: z
     .enum(["morning", "afternoon", "evening", "any"])
-    .optional()
+    .nullish()
     .transform((value) => value ?? "any"),
 
   notes: z
     .string()
     .trim()
     .max(2000, "Please keep the notes under 2000 characters.")
-    .optional()
+    .nullish()
     .transform((value) => (value ? value : null)),
 });
 

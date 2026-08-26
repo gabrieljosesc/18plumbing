@@ -32,6 +32,17 @@ export const site = {
     google: "https://www.google.com/maps?cid=5532056083881088808",
   },
 
+  /**
+   * Where "leave us a review" points.
+   *
+   * This opens the listing and the customer taps "Write a review" — one extra
+   * tap. Google's one-tap short link (https://g.page/r/…/review) is only
+   * visible inside the owner's Business Profile dashboard, under "Ask for
+   * reviews", so it cannot be derived from the public listing. Paste it here
+   * when you have it: fewer taps means noticeably more reviews.
+   */
+  reviewUrl: "https://www.google.com/maps?cid=5532056083881088808",
+
   rating: {
     value: 4.9,
     count: 10,
@@ -48,6 +59,13 @@ export const serviceAreas = [
   "Richmond Hill",
   "Mississauga",
 ] as const;
+
+/** "Toronto, North York, … and Mississauga" — for prose like the FAQ answers. */
+function serviceAreasSentence(): string {
+  const all = [...serviceAreas];
+  const last = all.pop();
+  return `${all.join(", ")} and ${last}`;
+}
 
 export type Service = {
   id: string;
@@ -128,31 +146,166 @@ export const services: Service[] = [
   },
 ];
 
+/* ------------------------------------------------------------- pricing */
+
+export const pricing = {
+  /** Shown as the price anchor. Waived when the customer goes ahead with the job. */
+  diagnostic: 89,
+  plan: {
+    monthly: 15,
+    annual: 180,
+  },
+  /** Member discount on labour, as a whole percentage. */
+  labourDiscount: 15,
+} as const;
+
+/* --------------------------------------------------------- credentials */
+
+/**
+ * Trust signals that need real-world values before they are worth showing.
+ *
+ * Both are null on purpose — a licence number cannot be invented, and a stock
+ * photo of a stranger is worse than no photo. Every component that uses these
+ * checks for null and simply omits the block, so the site stays correct until
+ * the real details are dropped in.
+ */
+export const credentials = {
+  /** e.g. "T85-1234567" — from the City of Toronto master plumber licence. */
+  licenceNumber: null as string | null,
+  /** Put a real photo at public/img/team.jpg, then set this to "/img/team.jpg". */
+  teamPhoto: null as string | null,
+  /** Who the customer actually meets. */
+  ownerName: "Charles",
+} as const;
+
 export type Benefit = {
   icon: string;
   title: string;
   blurb: string;
 };
 
-/** The three things a membership actually gets you. */
-export const memberBenefits: Benefit[] = [
+/** The free list — no account, no payment, just a place in the queue. */
+export const priorityListBenefits: Benefit[] = [
   {
     icon: "clock",
-    title: "Priority scheduling",
+    title: "Priority over new callers",
     blurb:
-      "Members go to the front of the queue. Quote your member number when you call and we fit you in ahead of general bookings.",
+      "We already have your address and history, so booking you in takes one call instead of twenty questions.",
   },
   {
-    icon: "shield",
-    title: "Free yearly inspection",
+    icon: "phone",
+    title: "One number that knows you",
     blurb:
-      "Once a year we check your drains, fixtures, shut-off valves and hot water tank, and tell you what is worth doing before it becomes a leak.",
+      "No forms, no re-explaining the layout of your basement. You are on the list and we know the property.",
+  },
+  {
+    icon: "drop",
+    title: "Seasonal reminders",
+    blurb:
+      "A note before winter about outdoor taps and anything we flagged last visit. No spam, no newsletters.",
+  },
+];
+
+/** The paid plan — the real membership. */
+export const planBenefits: Benefit[] = [
+  {
+    icon: "shield",
+    title: "Annual plumbing inspection",
+    blurb:
+      "A full yearly check of drains, fixtures, shut-off valves and your hot water tank, with a written list of anything worth doing before it becomes a leak.",
   },
   {
     icon: "tag",
-    title: "Discount on services",
+    title: `${pricing.labourDiscount}% off labour`,
     blurb:
-      "A standing member discount on every call-out and installation, applied automatically to your invoice.",
+      "Every visit, every job, all year. On a single decent repair this pays for the plan on its own.",
+  },
+  {
+    icon: "phone",
+    title: "No emergency call-out fee",
+    blurb:
+      "Burst pipe at 2am costs you the work, not the trip. Non-members pay a call-out on top.",
+  },
+  {
+    icon: "tank",
+    title: "Hot water tank flush",
+    blurb:
+      "Sediment flushed out once a year, which is the single cheapest thing you can do to keep a tank running longer.",
+  },
+  {
+    icon: "clock",
+    title: "Front of the queue",
+    blurb:
+      "Members get scheduled ahead of general bookings. In a bad week that is the difference between today and Thursday.",
+  },
+];
+
+export const planOptions = [
+  {
+    value: "annual",
+    label: "Annual",
+    price: `$${pricing.plan.annual}`,
+    per: "per year",
+    note: "The inspection alone is worth roughly this much.",
+    featured: true,
+  },
+  {
+    value: "monthly",
+    label: "Monthly",
+    price: `$${pricing.plan.monthly}`,
+    per: "per month",
+    note: "Cancel any time, no contract.",
+    featured: false,
+  },
+] as const;
+
+export type PlanValue = (typeof planOptions)[number]["value"];
+
+/* ------------------------------------------------------------------ faq */
+
+export type Faq = { question: string; answer: string };
+
+/**
+ * Answers to what people actually type into Google before calling a plumber.
+ * Rendered on the page and emitted as FAQPage structured data.
+ */
+export const faqs: Faq[] = [
+  {
+    question: "Do you charge a call-out fee?",
+    answer: `We charge a $${pricing.diagnostic} diagnostic to come out and find the problem, and it is waived if you go ahead with the work. Members on the paid plan pay no emergency call-out fee at all.`,
+  },
+  {
+    question: "How much does a plumber cost in Toronto?",
+    answer: `It depends on the job, but you will never get a surprise. We quote the work before we start, so you approve the price first. The visit itself is $${pricing.diagnostic}, waived if we do the work.`,
+  },
+  {
+    question: "Are you licensed and insured?",
+    answer:
+      "Yes — licensed and insured, and every job is done to the Ontario Building Code, which is what governs plumbing work in Ontario. That matters if the work is ever inspected or you sell the house.",
+  },
+  {
+    question: "Do you actually answer at night and on weekends?",
+    answer:
+      "Yes. The line is open 24 hours, seven days a week, and a real plumber picks up. Water damage does not wait for Monday.",
+  },
+  {
+    question: "What areas do you cover?",
+    answer: `Toronto and the surrounding GTA — ${serviceAreasSentence()}. If you are near the edge of that, call and ask and we will tell you straight away.`,
+  },
+  {
+    question: "What kind of properties do you work on?",
+    answer:
+      "Low-rise residential and low-rise commercial — houses, duplexes, small apartment buildings and small commercial units. Installation, maintenance and repair.",
+  },
+  {
+    question: "What is included in the membership inspection?",
+    answer:
+      "We check drains, fixtures, taps, shut-off valves and the hot water tank, flush the tank, and leave you a written list of what is fine, what to watch, and what needs doing. No pressure to book any of it.",
+  },
+  {
+    question: "How quickly can you get here?",
+    answer:
+      "For emergencies we move as fast as traffic allows, usually same day. Members on the paid plan are scheduled ahead of general bookings.",
   },
 ];
 

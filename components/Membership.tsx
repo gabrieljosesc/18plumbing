@@ -1,11 +1,32 @@
 import Link from "next/link";
-import { memberBenefits } from "@/lib/site";
-import { ClockIcon, ShieldCheckIcon, TagIcon } from "./Icons";
+import {
+  planBenefits,
+  planOptions,
+  pricing,
+  priorityListBenefits,
+  site,
+} from "@/lib/site";
+import PriorityListForm from "./PriorityListForm";
+import {
+  CheckIcon,
+  ClockIcon,
+  DropIcon,
+  PhoneIcon,
+  ShieldCheckIcon,
+  TagIcon,
+  TankIcon,
+} from "./Icons";
 
-const ICONS: Record<string, (props: React.SVGProps<SVGSVGElement>) => React.JSX.Element> = {
+const ICONS: Record<
+  string,
+  (props: React.SVGProps<SVGSVGElement>) => React.JSX.Element
+> = {
   clock: ClockIcon,
   shield: ShieldCheckIcon,
   tag: TagIcon,
+  phone: PhoneIcon,
+  tank: TankIcon,
+  drop: DropIcon,
 };
 
 export default function Membership({ signedIn }: { signedIn: boolean }) {
@@ -14,44 +35,102 @@ export default function Membership({ signedIn }: { signedIn: boolean }) {
       <div className="wrap">
         <div className="section-head section-head--center reveal">
           <span className="eyebrow">Membership</span>
-          <h2>Join as a member — it&rsquo;s free</h2>
+          <h2>Two ways to become a regular</h2>
           <p>
-            Create an account and you move to the front of the queue, get a plumbing
-            inspection on us every year, and pay less on every job.
+            Get on the free list so we know your property, or take the plan and
+            stop worrying about the place altogether.
           </p>
         </div>
 
-        <div className="benefits">
-          {memberBenefits.map((benefit) => {
-            const Icon = ICONS[benefit.icon];
-            return (
-              <article className="benefit reveal" key={benefit.title}>
-                <span className="benefit__icon">{Icon ? <Icon /> : null}</span>
-                <h3>{benefit.title}</h3>
-                <p>{benefit.blurb}</p>
-              </article>
-            );
-          })}
-        </div>
+        <div className="tiers">
+          {/* ------------------------------------------------ free tier */}
+          <article className="tier reveal">
+            <header className="tier__head">
+              <span className="tier__label">Priority list</span>
+              <span className="tier__price">Free</span>
+              <p className="tier__pitch">
+                No account, no card. Just your name, number and address so we are
+                not starting from scratch when something goes wrong.
+              </p>
+            </header>
 
-        <div className="membership-cta reveal">
-          {signedIn ? (
-            <Link className="btn btn--white" href="/account">
-              Go to my account
-            </Link>
-          ) : (
-            <>
-              <Link className="btn btn--white" href="/signup">
-                Create my membership
-              </Link>
-              <Link className="btn btn--ghost-light" href="/login">
-                Sign in
-              </Link>
-            </>
-          )}
-          <p className="membership-cta__note">
-            No membership fee and no contract — you are just on the list.
-          </p>
+            <ul className="tier__list">
+              {priorityListBenefits.map((benefit) => (
+                <li key={benefit.title}>
+                  <CheckIcon />
+                  <span>
+                    <strong>{benefit.title}</strong>
+                    <span>{benefit.blurb}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <div className="tier__form">
+              <PriorityListForm />
+            </div>
+          </article>
+
+          {/* ------------------------------------------------ paid tier */}
+          <article className="tier tier--featured reveal">
+            <span className="tier__flag">Best value</span>
+            <header className="tier__head">
+              <span className="tier__label">The plan</span>
+              <span className="tier__price">
+                ${pricing.plan.annual}
+                <span className="tier__per">/ year</span>
+              </span>
+              <p className="tier__pitch">
+                or ${pricing.plan.monthly} a month. The annual inspection alone is
+                worth roughly what the year costs &mdash; everything else is the
+                reason people stay.
+              </p>
+            </header>
+
+            <ul className="tier__list">
+              {planBenefits.map((benefit) => {
+                const Icon = ICONS[benefit.icon] ?? CheckIcon;
+                return (
+                  <li key={benefit.title}>
+                    <Icon />
+                    <span>
+                      <strong>{benefit.title}</strong>
+                      <span>{benefit.blurb}</span>
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+
+            <div className="tier__actions">
+              {signedIn ? (
+                <Link className="btn btn--white btn--block" href="/account">
+                  Go to my account
+                </Link>
+              ) : (
+                <>
+                  {planOptions.map((option) => (
+                    <Link
+                      key={option.value}
+                      className={
+                        option.featured
+                          ? "btn btn--white btn--block"
+                          : "btn btn--ghost-light btn--block"
+                      }
+                      href={`/signup?plan=${option.value}`}
+                    >
+                      {option.label} &mdash; {option.price} {option.per}
+                    </Link>
+                  ))}
+                </>
+              )}
+              <p className="tier__note">
+                No contract, cancel any time. We take payment over the phone once
+                you sign up &mdash; call <a href={site.phoneHref}>{site.phone}</a> if
+                you would rather just do it that way.
+              </p>
+            </div>
+          </article>
         </div>
       </div>
     </section>

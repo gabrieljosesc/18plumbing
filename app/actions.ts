@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import {
   inspectionSchema,
   keepValues,
+  priorityListSchema,
   loginSchema,
   signupSchema,
   toFieldErrors,
@@ -37,9 +38,16 @@ export async function signUp(
     address: formData.get("address"),
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
+    plan: formData.get("plan"),
   });
 
-  const keep = keepValues(formData, ["fullName", "email", "phone", "address"]);
+  const keep = keepValues(formData, [
+    "fullName",
+    "email",
+    "phone",
+    "address",
+    "plan",
+  ]);
 
   if (!parsed.success) {
     return {
@@ -62,6 +70,7 @@ export async function signUp(
         full_name: parsed.data.fullName,
         phone: parsed.data.phone,
         address: parsed.data.address,
+        plan: parsed.data.plan,
       },
       emailRedirectTo: `${origin}/auth/confirm`,
     },
@@ -94,7 +103,75 @@ export async function signUp(
     status: "success",
     message:
       `Almost there — we sent a confirmation link to ${parsed.data.email}. ` +
-      "Click it to activate your membership.",
+      "Click it to confirm your email, then we will call to set up payment " +
+      "and switch your benefits on.",
+  };
+}
+
+/* ------------------------------------------------ free priority list */
+
+export async function joinPriorityList(
+  _previous: AuthFormState,
+  formData: FormData,
+): Promise<AuthFormState> {
+  // Honeypot — hidden field, so anything in it is a bot. Report success so it
+  // learns nothing from the response.
+  if (formData.get("company")) {
+    return { status: "success", message: "Thanks — you are on the list." };
+  }
+
+  const parsed = priorityListSchema.safeParse({
+    fullName: formData.get("fullName"),
+    phone: formData.get("phone"),
+    address: formData.get("address"),
+    email: formData.get("email"),
+    notes: formData.get("notes"),
+  });
+
+  const keep = keepValues(formData, [
+    "fullName",
+    "phone",
+    "address",
+    "email",
+    "notes",
+  ]);
+
+  if (!parsed.success) {
+    return {
+      status: "error",
+      message: "Please check the highlighted fields.",
+      fieldErrors: toFieldErrors(parsed.error),
+      values: keep,
+    };
+  }
+
+  const headerList = await headers();
+
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase.from("priority_list").insert({
+      full_name: parsed.data.fullName,
+      phone: parsed.data.phone,
+      address: parsed.data.address,
+      email: parsed.data.email,
+      notes: parsed.data.notes,
+      source_page: headerList.get("referer"),
+    });
+    if (error) throw error;
+  } catch (error) {
+    console.error("joinPriorityList: insert failed", error);
+    return {
+      status: "error",
+      message: `Sorry, that did not go through. ${FALLBACK}`,
+      values: keep,
+    };
+  }
+
+  return {
+    status: "success",
+    message:
+      "You are on the list. Next time you call we will already have your " +
+      `address on file — just give us your name on ${site.phone}.`,
   };
 }
 

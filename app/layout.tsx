@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Montserrat } from "next/font/google";
-import { serviceAreas, site } from "@/lib/site";
+import { credentials, faqs, pricing, services, serviceAreas, site } from "@/lib/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -94,6 +94,50 @@ const localBusinessJsonLd = {
     bestRating: "5",
   },
   sameAs: [site.social.facebook, site.social.instagram, site.social.google],
+  priceRange: "$$",
+  currenciesAccepted: "CAD",
+  ...(credentials.licenceNumber
+    ? {
+        hasCredential: {
+          "@type": "EducationalOccupationalCredential",
+          credentialCategory: "Plumbing licence",
+          identifier: credentials.licenceNumber,
+        },
+      }
+    : {}),
+  // Lets Google show the individual services rather than just the business.
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Plumbing services",
+    itemListElement: services.map((service) => ({
+      "@type": "Offer",
+      itemOffered: {
+        "@type": "Service",
+        name: service.title,
+        description: service.blurb,
+      },
+    })),
+  },
+  makesOffer: {
+    "@type": "Offer",
+    name: "18 Plumbing membership",
+    description:
+      `Annual plumbing inspection, ${pricing.labourDiscount}% off labour, no emergency ` +
+      "call-out fee, hot water tank flush and front-of-queue scheduling.",
+    price: String(pricing.plan.annual),
+    priceCurrency: "CAD",
+  },
+};
+
+/** Answers the questions people type before they call. */
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: { "@type": "Answer", text: faq.answer },
+  })),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -106,8 +150,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <script
           type="application/ld+json"
-          // Static object built above — no user input reaches this.
+          // Static objects built above — no user input reaches these.
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
         />
       </body>
     </html>

@@ -4,7 +4,7 @@ const ITEMS = [
   {
     Icon: ShieldCheckIcon,
     title: "Licensed & insured",
-    detail: "Work done to the Ontario plumbing code",
+    detail: "Work done to the Ontario Building Code",
   },
   {
     Icon: ClockIcon,

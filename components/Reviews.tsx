@@ -44,6 +44,22 @@ export default function Reviews() {
             <GoogleIcon />
             See all {site.rating.count} reviews on Google
           </a>
+
+          <div className="review-ask">
+            <p>
+              <strong>Had us out recently?</strong> A review takes thirty seconds
+              and is genuinely the thing that decides whether the next person in
+              your neighbourhood finds us.
+            </p>
+            <a
+              className="btn btn--ghost-light"
+              href={site.reviewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Leave a review
+            </a>
+          </div>
         </div>
       </div>
     </section>

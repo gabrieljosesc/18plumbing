@@ -1,4 +1,4 @@
-import { site } from "@/lib/site";
+import { pricing, site } from "@/lib/site";
 import { ClockIcon, PhoneIcon, PinIcon, ShieldIcon, StarIcon, Stars } from "./Icons";
 
 export default function Hero() {
@@ -15,13 +15,18 @@ export default function Hero() {
             work, straight answers, and a phone that gets picked up at 2&nbsp;a.m.
           </p>
 
+          <p className="hero__anchor">
+            <strong>${pricing.diagnostic} diagnostic</strong> &mdash; waived if we do
+            the work. You approve the price before anything starts.
+          </p>
+
           <div className="hero__actions">
             <a className="btn btn--primary" href={site.phoneHref}>
               <PhoneIcon />
               Call {site.phone}
             </a>
-            <a className="btn btn--ghost-light" href="#contact">
-              Request a Quote
+            <a className="btn btn--ghost-light" href="#membership">
+              See the plan
             </a>
           </div>
 

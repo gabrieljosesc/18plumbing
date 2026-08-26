@@ -3,12 +3,12 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import LoginForm from "@/components/LoginForm";
 import TopBar from "@/components/TopBar";
-import { memberBenefits } from "@/lib/site";
+import { planBenefits } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Member sign in",
   description:
-    "Sign in to your 18 Plumbing membership to book your free yearly inspection and view your member details.",
+    "Sign in to your 18 Plumbing membership to book your annual inspection and view your member details.",
 };
 
 const NOTICES: Record<string, string> = {
@@ -38,7 +38,7 @@ export default async function LoginPage({
           <div className="auth-aside">
             <h2>Members get</h2>
             <ul className="auth-benefits">
-              {memberBenefits.map((benefit) => (
+              {planBenefits.map((benefit) => (
                 <li key={benefit.title}>
                   <strong>{benefit.title}</strong>
                   <span>{benefit.blurb}</span>

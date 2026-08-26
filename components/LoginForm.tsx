@@ -37,7 +37,7 @@ export default function LoginForm({
     <div className="auth-card">
       <h1>Member sign in</h1>
       <p className="auth-lede">
-        Sign in to book your free inspection and see your membership details.
+        Sign in to book your annual inspection and see your membership details.
       </p>
 
       <form action={formAction} noValidate>

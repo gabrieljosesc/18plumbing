@@ -5,7 +5,7 @@ import { CheckCircleIcon } from "./Icons";
 const POINTS = [
   {
     lead: "Work to code.",
-    rest: "Everything done to the Canadian plumbing code, so it holds up to inspection.",
+    rest: "Everything done to the Ontario Building Code, which is what governs plumbing work here, so it holds up to inspection.",
   },
   {
     lead: "Options first.",

@@ -3,15 +3,24 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import SignupForm from "@/components/SignupForm";
 import TopBar from "@/components/TopBar";
-import { memberBenefits } from "@/lib/site";
+import { planBenefits, pricing, type PlanValue } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Become a member",
+  title: "Join the plan",
   description:
-    "Join 18 Plumbing for priority scheduling, a free yearly plumbing inspection and a standing discount on every job. Free to join.",
+    `Join the 18 Plumbing membership: annual plumbing inspection, ${pricing.labourDiscount}% off labour, ` +
+    `no emergency call-out fee, hot water tank flush and front-of-queue scheduling. ` +
+    `$${pricing.plan.monthly}/month or $${pricing.plan.annual}/year.`,
 };
 
-export default function SignupPage() {
+export default async function SignupPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ plan?: string }>;
+}) {
+  const params = await searchParams;
+  const initialPlan: PlanValue = params.plan === "monthly" ? "monthly" : "annual";
+
   return (
     <>
       <TopBar />
@@ -20,9 +29,9 @@ export default function SignupPage() {
       <main className="auth-page" id="main">
         <div className="wrap auth-layout">
           <div className="auth-aside">
-            <h2>What membership gets you</h2>
+            <h2>What the plan gets you</h2>
             <ul className="auth-benefits">
-              {memberBenefits.map((benefit) => (
+              {planBenefits.map((benefit) => (
                 <li key={benefit.title}>
                   <strong>{benefit.title}</strong>
                   <span>{benefit.blurb}</span>
@@ -30,11 +39,11 @@ export default function SignupPage() {
               ))}
             </ul>
             <p className="auth-aside__note">
-              Free to join, no contract, and you can stop any time.
+              No contract and no cancellation fee &mdash; stop whenever you like.
             </p>
           </div>
 
-          <SignupForm />
+          <SignupForm initialPlan={initialPlan} />
         </div>
       </main>
 
