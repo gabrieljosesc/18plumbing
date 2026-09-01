@@ -63,7 +63,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-img { max-width: 100%; display: block; }
+/* height:auto matters more than it looks. next/image emits width and height
+   attributes on the <img>; without this the attribute height wins, any
+   aspect-ratio we set is ignored (it only applies when height is auto), and
+   the image renders stretched to its intrinsic pixel height. Rules that set an
+   explicit height, like .gallery__item img, still override this. */
+img { max-width: 100%; display: block; height: auto; }
 a { color: var(--teal-700); }
 
 h1, h2, h3, h4 {
@@ -1011,7 +1016,9 @@ p  { margin: 0 0 1rem; }
 .team__van img {
   width: 100%;
   border-radius: 6px;
-  aspect-ratio: 4 / 3;
+  /* The van was shot portrait, so a landscape crop would slice a thin band out
+     of the middle and lose the signwriting. */
+  aspect-ratio: 3 / 4;
   object-fit: cover;
 }
 .team__van figcaption {
