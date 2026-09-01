@@ -69,15 +69,12 @@ export const site = {
   },
 
   /**
-   * Where "leave us a review" points.
-   *
-   * This opens the listing and the customer taps "Write a review" — one extra
-   * tap. Google's one-tap short link (https://g.page/r/…/review) is only
-   * visible inside the owner's Business Profile dashboard, under "Ask for
-   * reviews", so it cannot be derived from the public listing. Paste it here
-   * when you have it: fewer taps means noticeably more reviews.
+   * Google's one-tap review link, from Business Profile → Ask for reviews.
+   * Opens the review box directly rather than the listing, which is the
+   * difference between one tap and three. This is the link to text customers
+   * after a job.
    */
-  reviewUrl: "https://www.google.com/maps?cid=5532056083881088808",
+  reviewUrl: "https://g.page/r/CShXRb2yz8VMEBM/review",
 
   rating: {
     value: 4.9,
@@ -200,16 +197,16 @@ export const pricing = {
 /**
  * Trust signals that need real-world values before they are worth showing.
  *
- * Both are null on purpose — a licence number cannot be invented, and a stock
- * photo of a stranger is worse than no photo. Every component that uses these
- * checks for null and simply omits the block, so the site stays correct until
- * the real details are dropped in.
+ * The photo is now a real one from the client. The licence number is still
+ * null and must stay that way until the real number arrives: it cannot be
+ * invented. Components check for null and omit the block, so the site stays
+ * correct either way.
  */
 export const credentials = {
   /** e.g. "T85-1234567" — from the City of Toronto master plumber licence. */
   licenceNumber: null as string | null,
-  /** Put a real photo at public/img/team.jpg, then set this to "/img/team.jpg". */
-  teamPhoto: null as string | null,
+  /** Supplied by the client. Confirm this is Charles before naming him on it. */
+  teamPhoto: "/img/team.jpg" as string | null,
   /** Who the customer actually meets. */
   ownerName: "Charles",
 } as const;
@@ -362,31 +359,84 @@ export type GalleryPhoto = {
   label: string;
 };
 
-/** Job photos taken from the company's own Instagram feed. */
+/**
+ * Job photos supplied by the client, shot on site.
+ *
+ * These replaced the Instagram-sourced set, which was capped at 512-640px
+ * because that is all Instagram serves publicly. Originals are 3024x4032.
+ */
 export const gallery: GalleryPhoto[] = [
   {
-    src: "/img/gallery-kitchen-faucet.jpg",
-    width: 587,
-    height: 640,
-    alt: "Matte black pull-down kitchen faucet installed against a grey brick tile backsplash.",
-    caption: "Matte black pull-down kitchen faucet and soap dispenser install",
-    label: "Kitchen faucet install",
+    src: "/img/gallery-kitchen-island.jpg",
+    width: 900,
+    height: 1200,
+    alt: "Finished kitchen island with an undermount sink and brushed brass pull-down faucet in a marble worktop.",
+    caption: "Kitchen island sink and brass faucet, fully plumbed and finished",
+    label: "Kitchen island sink",
   },
   {
-    src: "/img/gallery-kitchen-sink-disposal.jpg",
-    width: 512,
-    height: 640,
-    alt: "Undermount stainless kitchen sink with the garbage disposal and drain plumbing fitted underneath.",
-    caption: "Undermount kitchen sink with garbage disposal and drain hook-up",
-    label: "Sink & disposal hook-up",
+    src: "/img/gallery-marble-shower.jpg",
+    width: 900,
+    height: 1200,
+    alt: "Walk-in shower with a rain head, handheld and thermostatic valve set into a marble wall.",
+    caption: "Walk-in shower with rain head and thermostatic valve",
+    label: "Shower installation",
   },
   {
-    src: "/img/gallery-vanity-toilet.jpg",
-    width: 518,
-    height: 640,
-    alt: "Newly installed bathroom vanity with a brushed bronze faucet, next to a fitted toilet.",
-    caption: "Bathroom vanity and toilet installation",
-    label: "Vanity & toilet install",
+    src: "/img/gallery-drain-machine.jpg",
+    width: 900,
+    height: 1200,
+    alt: "Plumber in an 18 Plumbing shirt running a drain machine into a basement floor drain.",
+    caption: "Clearing a main drain with the drain machine",
+    label: "Drain clearing",
+  },
+  {
+    src: "/img/gallery-rough-in.jpg",
+    width: 900,
+    height: 1200,
+    alt: "Copper supply lines and shower valve roughed into an open stud wall before drywall.",
+    caption: "Copper rough-in and shower valve, before the walls close up",
+    label: "Bathroom rough-in",
+  },
+  {
+    src: "/img/gallery-bathroom-suite.jpg",
+    width: 900,
+    height: 1200,
+    alt: "Finished bathroom with a wall-hung toilet and glass shower enclosure against marble tiling.",
+    caption: "Finished bathroom, toilet and glass shower enclosure",
+    label: "Bathroom fit-out",
+  },
+  {
+    src: "/img/gallery-water-filtration.jpg",
+    width: 900,
+    height: 1200,
+    alt: "Two-stage whole-home water filtration system plumbed into copper lines on a basement wall.",
+    caption: "Whole-home water filtration plumbed into the main line",
+    label: "Water filtration",
+  },
+  {
+    src: "/img/gallery-dishwasher-new.jpg",
+    width: 900,
+    height: 1200,
+    alt: "Stainless dishwasher fitted under a marble worktop beside an undermount sink.",
+    caption: "Dishwasher installed and connected under the counter",
+    label: "Dishwasher install",
+  },
+  {
+    src: "/img/gallery-floating-vanity.jpg",
+    width: 900,
+    height: 1200,
+    alt: "Wall-hung vanity with an integrated basin and single-lever chrome mixer.",
+    caption: "Wall-hung vanity and basin, waste and supplies concealed",
+    label: "Floating vanity",
+  },
+  {
+    src: "/img/gallery-toilet-flange.jpg",
+    width: 900,
+    height: 1200,
+    alt: "New toilet flange set into the subfloor on a fresh ABS drain connection.",
+    caption: "Toilet flange set on a new ABS drain",
+    label: "Toilet rough-in",
   },
   {
     src: "/img/gallery-hot-water-tank.jpg",
@@ -394,47 +444,23 @@ export const gallery: GalleryPhoto[] = [
     height: 640,
     alt: "Hot water tank in a basement with blue PEX supply line coiled and connected to a floor drain.",
     caption: "Hot water tank with new PEX supply lines run to the drain",
-    label: "Hot water tank & supply line",
+    label: "Hot water tank",
   },
   {
-    src: "/img/gallery-dishwasher.jpg",
-    width: 611,
-    height: 640,
-    alt: "Stainless steel dishwasher installed flush under a stone countertop between white cabinets.",
-    caption: "Built-in stainless dishwasher installation",
-    label: "Dishwasher installation",
+    src: "/img/gallery-faucet-chrome.jpg",
+    width: 1066,
+    height: 1168,
+    alt: "Polished chrome two-handle basin mixer fitted to a speckled quartz vanity top.",
+    caption: "Chrome basin mixer swapped and tested",
+    label: "Faucet replacement",
   },
   {
-    src: "/img/gallery-drain-stack.jpg",
-    width: 640,
-    height: 640,
-    alt: "Repaired drain stack joined with a flexible coupling and a new cleanout fitting inside a wall cavity.",
-    caption: "Cast iron drain stack repair with flexible coupling and cleanout",
-    label: "Drain stack repair",
-  },
-  {
-    src: "/img/gallery-bathroom-faucet.jpg",
-    width: 640,
-    height: 493,
-    alt: "Polished chrome two-handle bathroom faucet fitted to a speckled quartz vanity top.",
-    caption: "Chrome centre-set bathroom faucet on a quartz vanity",
-    label: "Bathroom faucet",
-  },
-  {
-    src: "/img/gallery-washer-rough-in.jpg",
-    width: 640,
-    height: 535,
-    alt: "Washing machine alcove with a new water supply line roughed in through the wall.",
-    caption: "Washing machine water line rough-in",
-    label: "Washer rough-in",
-  },
-  {
-    src: "/img/gallery-island-prep-sink.jpg",
-    width: 512,
-    height: 640,
-    alt: "Round stainless prep sink and matte black faucet set into a marble kitchen island.",
-    caption: "Island prep sink with matte black pull-out faucet",
-    label: "Island prep sink",
+    src: "/img/gallery-renovation.jpg",
+    width: 1200,
+    height: 900,
+    alt: "Stripped-back room during renovation with new plumbing runs visible in the open studs.",
+    caption: "Full renovation, plumbing roughed in before drywall",
+    label: "Renovation rough-in",
   },
 ];
 

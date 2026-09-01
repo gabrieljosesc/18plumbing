@@ -58,10 +58,10 @@ export default function About() {
 
         <div className="about__media reveal">
           <Image
-            src="/img/gallery-island-prep-sink.jpg"
-            alt="A matte-black pull-down faucet and undermount prep sink installed in a stone kitchen island."
-            width={512}
-            height={640}
+            src="/img/gallery-kitchen-island.jpg"
+            alt="Finished kitchen island with an undermount sink and brushed brass pull-down faucet in a marble worktop."
+            width={900}
+            height={1200}
             sizes="(max-width: 1024px) 100vw, 50vw"
           />
           <div className="about__stamp">

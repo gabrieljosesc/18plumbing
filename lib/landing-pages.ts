@@ -99,10 +99,10 @@ export const landingPages: LandingPage[] = [
       },
     ],
     image: {
-      src: "/img/gallery-drain-stack.jpg",
-      alt: "Repaired drain stack joined with a flexible coupling and a new cleanout fitting.",
-      width: 640,
-      height: 640,
+      src: "/img/gallery-drain-machine.jpg",
+      alt: "Plumber in an 18 Plumbing shirt running a drain machine into a basement floor drain.",
+      width: 900,
+      height: 1200,
     },
   },
 
@@ -159,9 +159,9 @@ export const landingPages: LandingPage[] = [
       },
     ],
     image: {
-      src: "/img/gallery-kitchen-sink-disposal.jpg",
-      alt: "Undermount stainless kitchen sink with the garbage disposal and drain plumbing fitted underneath.",
-      width: 512,
+      src: "/img/gallery-drain-stack.jpg",
+      alt: "Repaired drain stack joined with a flexible coupling and a new cleanout fitting.",
+      width: 640,
       height: 640,
     },
   },
@@ -283,10 +283,10 @@ export const landingPages: LandingPage[] = [
       },
     ],
     image: {
-      src: "/img/gallery-vanity-toilet.jpg",
-      alt: "Newly installed bathroom vanity and fitted toilet.",
-      width: 518,
-      height: 640,
+      src: "/img/gallery-bathroom-suite.jpg",
+      alt: "Finished bathroom with a wall-hung toilet and glass shower enclosure against marble tiling.",
+      width: 900,
+      height: 1200,
     },
   },
 
@@ -343,10 +343,10 @@ export const landingPages: LandingPage[] = [
       },
     ],
     image: {
-      src: "/img/gallery-kitchen-faucet.jpg",
-      alt: "Matte black pull-down kitchen faucet installed against a grey brick tile backsplash.",
-      width: 587,
-      height: 640,
+      src: "/img/gallery-kitchen-island.jpg",
+      alt: "Finished kitchen island with an undermount sink and brushed brass pull-down faucet.",
+      width: 900,
+      height: 1200,
     },
   },
 
@@ -403,10 +403,10 @@ export const landingPages: LandingPage[] = [
       },
     ],
     image: {
-      src: "/img/gallery-dishwasher.jpg",
-      alt: "Stainless steel dishwasher installed flush under a stone countertop between white cabinets.",
-      width: 611,
-      height: 640,
+      src: "/img/gallery-dishwasher-new.jpg",
+      alt: "Stainless dishwasher fitted under a marble worktop beside an undermount sink.",
+      width: 900,
+      height: 1200,
     },
   },
 ];

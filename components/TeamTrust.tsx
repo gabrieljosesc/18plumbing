@@ -19,11 +19,23 @@ export default function TeamTrust() {
           <div className="team__media reveal">
             <Image
               src={teamPhoto}
-              alt={`${ownerName} of ${site.name}`}
-              width={640}
-              height={640}
+              alt={`${ownerName} of ${site.name} threading pipe on site`}
+              width={750}
+              height={1000}
               sizes="(max-width: 1024px) 100vw, 42vw"
             />
+            {/* The van does a lot of work here: it says a real, equipped
+                business turns up, not someone with a bag of tools. */}
+            <figure className="team__van">
+              <Image
+                src="/img/van.jpg"
+                alt={`The ${site.name} van`}
+                width={788}
+                height={1400}
+                sizes="180px"
+              />
+              <figcaption>Our van, our tools, our name on it</figcaption>
+            </figure>
           </div>
         )}
 

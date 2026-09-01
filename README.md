@@ -96,16 +96,19 @@ cannot be derived from the public listing, which is why it is not already set.
 
 ## ⚠️ What still needs you
 
-Three things are stubbed because they cannot be invented:
+The team photo and the Google review link have both been supplied and are live.
+One thing is still stubbed, because it cannot be invented:
 
 | What | Where | Why it matters |
 | ---- | ----- | -------------- |
 | **Licence number** | `credentials.licenceNumber` in `lib/site.ts` | Currently `null`, so the licence line and the schema credential are omitted entirely. A real number is a strong trust signal — a made-up one is a liability. |
-| **Photo of Charles / the team** | `credentials.teamPhoto` | Also `null`, so the "Who turns up" section renders text-only. Drop a real photo at `public/img/team.jpg` and set the value. Faces convert; stock photos of strangers do the opposite. |
-| **Google review short link** | `site.reviewUrl` | See above. |
 
-All three degrade gracefully — the site is correct and complete without them,
-it just converts less well.
+
+It degrades gracefully: the licence line and the schema credential are simply
+omitted while the value is null, so the site stays correct meanwhile.
+
+Also unconfirmed: whether the person in `team.jpg` is Charles. The section names
+him, so check before it goes in front of customers.
 
 ---
 
@@ -159,13 +162,23 @@ member card and Google structured data at once.
 
 ### Images
 
-Photos in `public/img/` came from the company's own Instagram feed, the logo
-from the Facebook page. They are served at Instagram's resolution (512–640px).
-Higher-resolution originals can be dropped in under the same filenames; update
-the dimensions in `lib/site.ts` to match.
+Photos in `public/img/` were supplied by the client, shot on site. Originals are
+3024x4032; they are stored here resized to 900-1900px on the long edge, which is
+well above what any layout slot needs.
 
+The earlier Instagram-sourced set was removed. Instagram only serves 512-640px
+publicly, and those files were being displayed larger than their real resolution.
+`gallery-drain-stack.jpg` and `gallery-hot-water-tank.jpg` are the two survivors,
+kept because the client's set had no equivalent shot.
+
+`team.jpg` is the owner on site. `van.jpg` appears inset on the same section.
 `services-flyer.jpg` and `logo-wide.jpg` are kept for reference but unused — the
 flyer still shows the old Gmail address.
+
+Client photos arrive as HEIC from iPhones. Windows decodes HEIC natively via
+`System.Windows.Media.Imaging.BitmapDecoder`, so no extra tooling is needed, but
+EXIF orientation has to be applied manually or roughly a fifth of them come out
+on their side.
 
 ---
 

@@ -318,7 +318,7 @@ p  { margin: 0 0 1rem; }
   position: relative;
   background:
     linear-gradient(135deg, rgba(22,35,63,.96) 0%, rgba(44,68,120,.93) 55%, rgba(4,132,156,.88) 100%),
-    url("/img/gallery-kitchen-sink-disposal.jpg") center/cover no-repeat;
+    url("/img/hero.jpg") center/cover no-repeat;
   color: #fff;
   overflow: hidden;
 }
@@ -986,12 +986,40 @@ p  { margin: 0 0 1rem; }
   gap: 56px;
   align-items: center;
 }
-.team__media img {
+.team__media { position: relative; }
+.team__media > img {
   width: 100%;
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
-  aspect-ratio: 1;
+  aspect-ratio: 4 / 5;
   object-fit: cover;
+  object-position: center 20%;
+}
+
+/* Van tucked into the corner of the portrait. */
+.team__van {
+  position: absolute;
+  right: -18px;
+  bottom: -24px;
+  width: 168px;
+  margin: 0;
+  padding: 10px;
+  background: #fff;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-lg);
+}
+.team__van img {
+  width: 100%;
+  border-radius: 6px;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+.team__van figcaption {
+  margin-top: 7px;
+  font-size: .72rem;
+  line-height: 1.35;
+  color: var(--muted);
+  text-align: center;
 }
 .team__facts { list-style: none; margin: 26px 0 28px; padding: 0; }
 .team__facts li {
@@ -1712,6 +1740,7 @@ p  { margin: 0 0 1rem; }
   .tiers { grid-template-columns: 1fr; }
   .about__media { order: -1; }
   .about__stamp { right: 12px; bottom: -18px; }
+  .team__van { right: 8px; bottom: -16px; width: 140px; }
   .footer__grid { grid-template-columns: 1fr 1fr; }
   .account-grid { grid-template-columns: 1fr; }
 }
