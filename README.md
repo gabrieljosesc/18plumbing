@@ -47,8 +47,8 @@ rows land in `priority_list` and you work them from the Supabase Table Editor
 
 ### Paid — the plan
 
-**$15/month or $180/year.** Five benefits: annual inspection, 15% off labour,
-no emergency call-out fee, hot water tank flush, front of the queue.
+**$15/month or $180/year.** Four benefits: annual inspection, 15% off labour,
+hot water tank flush, front of the queue.
 
 Signup creates a real account but sets `membership_status = 'pending'`. The
 dashboard then shows a "one step left" panel and **hides the inspection booking
@@ -140,7 +140,7 @@ Almost all copy and business data sits in [`lib/site.ts`](lib/site.ts).
 | `site`            | Name, phone, email, hours, social links, Google rating |
 | `services`        | The eight service cards                                |
 | `pricing`         | Diagnostic fee, plan prices, labour discount           |
-| `planBenefits`    | The five paid-plan perks                               |
+| `planBenefits`    | The four paid-plan perks                               |
 | `priorityListBenefits` | What the free list gets you                       |
 | `faqs`            | FAQ copy, also emitted as FAQPage schema              |
 | `credentials`     | Licence number and team photo (both currently null)   |
@@ -154,7 +154,7 @@ member card and Google structured data at once.
 
 ### Current details
 
-- **Phone:** 647-618-3079 (open 24 hours)
+- **Phone:** 647-478-1857 (open 24 hours)
 - **Email:** info@18plumbing.ca — *replaces the old `18plumbing@gmail.com`*
 - **Facebook:** https://www.facebook.com/18plumbing/
 - **Instagram:** https://www.instagram.com/18plumbing/

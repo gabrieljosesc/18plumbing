@@ -53,8 +53,8 @@ export default function SignupForm({ initialPlan }: { initialPlan: PlanValue }) 
     <div className="auth-card">
       <h1>Join the plan</h1>
       <p className="auth-lede">
-        Annual inspection, {pricing.labourDiscount}% off labour, no emergency
-        call-out fee, tank flush and front of the queue.
+        Annual inspection, {pricing.labourDiscount}% off labour, a yearly tank
+        flush and front of the queue.
       </p>
 
       <form action={formAction} noValidate>

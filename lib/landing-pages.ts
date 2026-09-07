@@ -1,4 +1,4 @@
-import { pricing, serviceAreas } from "./site";
+import { pricing, serviceAreas, site } from "./site";
 
 /**
  * Dedicated landing pages, one per high-intent search.
@@ -47,7 +47,7 @@ export const landingPages: LandingPage[] = [
     service: "Emergency / leak",
     metaTitle: "Emergency Plumber Toronto | 24 Hour Callout",
     metaDescription:
-      "Burst pipe or flooding in Toronto? A licensed plumber answers 24 hours a day, seven days a week. Call 647-618-3079 — we move as fast as traffic allows.",
+      `Burst pipe or flooding in Toronto? A licensed plumber answers 24 hours a day, seven days a week. Call ${site.phone} — we move as fast as traffic allows.`,
     h1: "Emergency plumber in Toronto, 24 hours a day",
     subhead:
       "Burst pipe, flooding, no water — a licensed plumber picks up the phone at 2am, not an answering service.",
@@ -68,7 +68,7 @@ export const landingPages: LandingPage[] = [
       },
       {
         heading: "What it costs",
-        body: `A ${`$${pricing.diagnostic}`} diagnostic to come out and find the fault, waived if you go ahead with the repair. You approve the price of the work before anything starts. Members on the plan pay no emergency call-out fee at all.`,
+        body: `A ${`$${pricing.diagnostic}`} diagnostic to come out and find the fault, waived if you go ahead with the repair. You approve the price of the work before anything starts.`,
       },
     ],
     covers: [
@@ -112,7 +112,7 @@ export const landingPages: LandingPage[] = [
     service: "Drains & blockages",
     metaTitle: "Drain Cleaning Toronto | Blocked Drain Repair",
     metaDescription:
-      "Slow, gurgling or backed-up drains cleared properly in Toronto and the GTA. Licensed and insured, open 24 hours. Call 647-618-3079.",
+      `Slow, gurgling or backed-up drains cleared properly in Toronto and the GTA. Licensed and insured, open 24 hours. Call ${site.phone}.`,
     h1: "Drain cleaning in Toronto",
     subhead:
       "Slow, gurgling or backed up — cleared, then checked so it stays clear rather than coming back in a month.",
@@ -172,7 +172,7 @@ export const landingPages: LandingPage[] = [
     service: "Hot water tank",
     metaTitle: "Hot Water Tank Installation & Replacement | Toronto",
     metaDescription:
-      "Hot water tank supply, installation and replacement across Toronto and the GTA. Lines run properly and pressure tested. Licensed and insured — call 647-618-3079.",
+      `Hot water tank supply, installation and replacement across Toronto and the GTA. Lines run properly and pressure tested. Licensed and insured — call ${site.phone}.`,
     h1: "Hot water tank installation and replacement",
     subhead:
       "Supplied, installed and pressure tested — with the supply lines run properly rather than bodged to fit.",
@@ -236,7 +236,7 @@ export const landingPages: LandingPage[] = [
     service: "Bathroom (toilet, tub, shower, vanity)",
     metaTitle: "Toilet Repair & Installation Toronto | Licensed Plumber",
     metaDescription:
-      "Running, leaking, blocked or wobbling toilets repaired or replaced across Toronto and the GTA. Licensed and insured, open 24 hours. Call 647-618-3079.",
+      `Running, leaking, blocked or wobbling toilets repaired or replaced across Toronto and the GTA. Licensed and insured, open 24 hours. Call ${site.phone}.`,
     h1: "Toilet repair and installation in Toronto",
     subhead:
       "Running, leaking, blocked or rocking — fixed properly, or replaced and sealed so it stays put.",
@@ -296,7 +296,7 @@ export const landingPages: LandingPage[] = [
     service: "Faucets & fixtures",
     metaTitle: "Faucet & Fixture Installation Toronto | Licensed Plumber",
     metaDescription:
-      "Kitchen and bathroom faucets, valves and fixtures supplied, installed and repaired across Toronto and the GTA. Licensed and insured — call 647-618-3079.",
+      `Kitchen and bathroom faucets, valves and fixtures supplied, installed and repaired across Toronto and the GTA. Licensed and insured — call ${site.phone}.`,
     h1: "Faucet and fixture installation",
     subhead:
       "Kitchen, bathroom, laundry and outdoor taps — fitted properly, tested, and the old one taken away.",
@@ -356,7 +356,7 @@ export const landingPages: LandingPage[] = [
     service: "Appliance hook-up (dishwasher, washer, fridge line)",
     metaTitle: "Dishwasher & Appliance Hook-Up Toronto | Licensed Plumber",
     metaDescription:
-      "Dishwashers, washing machines and fridge water lines connected, levelled and leak tested across Toronto and the GTA. Call 647-618-3079.",
+      `Dishwashers, washing machines and fridge water lines connected, levelled and leak tested across Toronto and the GTA. Call ${site.phone}.`,
     h1: "Dishwasher and appliance hook-ups",
     subhead:
       "Dishwashers, washing machines and fridge water lines connected, levelled and leak tested before we leave.",

@@ -123,8 +123,8 @@ const localBusinessJsonLd = {
     "@type": "Offer",
     name: "18 Plumbing membership",
     description:
-      `Annual plumbing inspection, ${pricing.labourDiscount}% off labour, no emergency ` +
-      "call-out fee, hot water tank flush and front-of-queue scheduling.",
+      `Annual plumbing inspection, ${pricing.labourDiscount}% off labour, ` +
+      "a hot water tank flush and front-of-queue scheduling.",
     price: String(pricing.plan.annual),
     priceCurrency: "CAD",
   },

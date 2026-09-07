@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Join the plan",
   description:
     `Join the 18 Plumbing membership: annual plumbing inspection, ${pricing.labourDiscount}% off labour, ` +
-    `no emergency call-out fee, hot water tank flush and front-of-queue scheduling. ` +
+    `a hot water tank flush and front-of-queue scheduling. ` +
     `$${pricing.plan.monthly}/month or $${pricing.plan.annual}/year.`,
 };
 

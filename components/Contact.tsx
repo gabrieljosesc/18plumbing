@@ -68,7 +68,7 @@ export default function Contact({ signedIn }: { signedIn: boolean }) {
             <p>
               {signedIn
                 ? "Members: book your annual inspection from your account."
-                : `Members get an annual inspection, ${pricing.labourDiscount}% off labour and no emergency call-out fee — $${pricing.plan.annual} a year.`}
+                : `Members get an annual inspection, ${pricing.labourDiscount}% off labour and a yearly tank flush — $${pricing.plan.annual} a year.`}
             </p>
             <Link
               className="btn btn--outline"

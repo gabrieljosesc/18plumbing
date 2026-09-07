@@ -41,16 +41,16 @@ export const site = {
   tagline: "Installation · Maintenance · Repair",
   url: resolveSiteUrl(),
 
-  phone: "647-618-3079",
-  phoneHref: "tel:+16476183079",
-  phoneE164: "+1-647-618-3079",
+  phone: "647-478-1857",
+  phoneHref: "tel:+16474781857",
+  phoneE164: "+1-647-478-1857",
 
   /**
-   * Text-message link. Assumes 647-618-3079 can receive SMS — if it is a
+   * Text-message link. Assumes 647-478-1857 can receive SMS — if it is a
    * landline, the Text us buttons will silently do nothing on desktop and
    * open an unsendable draft on mobile, so check before relying on it.
    */
-  smsHref: "sms:+16476183079",
+  smsHref: "sms:+16474781857",
 
   email: "info@18plumbing.ca",
   emailHref: "mailto:info@18plumbing.ca",
@@ -254,12 +254,6 @@ export const planBenefits: Benefit[] = [
       "Every visit, every job, all year. On a single decent repair this pays for the plan on its own.",
   },
   {
-    icon: "phone",
-    title: "No emergency call-out fee",
-    blurb:
-      "Burst pipe at 2am costs you the work, not the trip. Non-members pay a call-out on top.",
-  },
-  {
     icon: "tank",
     title: "Hot water tank flush",
     blurb:
@@ -269,7 +263,7 @@ export const planBenefits: Benefit[] = [
     icon: "clock",
     title: "Front of the queue",
     blurb:
-      "Members get scheduled ahead of general bookings. In a bad week that is the difference between today and Thursday.",
+      "Members get scheduled ahead of general bookings, so you are not waiting behind whoever rang first.",
   },
 ];
 
@@ -305,7 +299,7 @@ export type Faq = { question: string; answer: string };
 export const faqs: Faq[] = [
   {
     question: "Do you charge a call-out fee?",
-    answer: `We charge a $${pricing.diagnostic} diagnostic to come out and find the problem, and it is waived if you go ahead with the work. Members on the paid plan pay no emergency call-out fee at all.`,
+    answer: `We charge a $${pricing.diagnostic} diagnostic to come out and find the problem, and it is waived if you go ahead with the work.`,
   },
   {
     question: "How much does a plumber cost in Toronto?",
