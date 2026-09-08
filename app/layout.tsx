@@ -41,10 +41,10 @@ export const metadata: Metadata = {
     images: [{ url: "/img/logo.jpg", width: 556, height: 556, alt: `${site.name} logo` }],
   },
   twitter: { card: "summary_large_image" },
-  icons: {
-    icon: "/img/favicon.svg",
-    apple: "/img/logo.jpg",
-  },
+  // No icons block on purpose. app/favicon.ico, app/icon.png and
+  // app/apple-icon.png are picked up by Next's file convention and get
+  // hashed URLs for cache busting. Declaring icons here would override
+  // that and pin the old paths.
 };
 
 export const viewport: Viewport = {
