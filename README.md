@@ -270,18 +270,23 @@ supabase/migrations/
 ## Deploying
 
 Standard Next.js output, needs a Node host — Vercel is the least-effort option.
-Currently live at **https://18plumbing.vercel.app**.
+Currently live at **https://www.18plumbing.ca**.
 
 Environment variables to set in the host:
 
 ```
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
+NEXT_PUBLIC_SITE_URL
 ```
 
-`NEXT_PUBLIC_SITE_URL` is optional. Left unset, the site uses whatever domain
-Vercel is serving it from, which is always correct. Set it only when you want to
-pin a specific origin — e.g. `https://18plumbing.ca` once that domain is live.
+`NEXT_PUBLIC_SITE_URL` is technically optional — left unset, the site uses
+whatever domain Vercel serves it from. It is set in production anyway, to
+`https://www.18plumbing.ca`, because the site answers on both the apex and
+`www.`. Unpinned, the canonical tag can name one while Google Ads and GA4 are
+keyed to the other.
+
+See [`.env.example`](.env.example) for the optional conversion-tracking vars.
 
 Then, in **Supabase → Authentication → URL Configuration**, add the production
 domain to **Site URL** and **Redirect URLs**. Confirmation emails point at
@@ -290,10 +295,38 @@ on that allowlist and falls back to Site URL.
 
 ### The 18plumbing.ca domain
 
-The domain is registered (nameservers at ClouDNS) but has **no A record**, so it
-does not resolve. Until it points at Vercel, the site should stay on the
-`.vercel.app` domain — which it now does automatically.
+Live. Nameservers are at ClouDNS, pointing at Vercel, serving on `www.`.
 
-To switch it over: add `18plumbing.ca` in Vercel → Settings → Domains, follow
-the DNS records it gives you, then add the domain to Supabase's Redirect URLs.
-Nothing in the code needs to change.
+Remember to keep **Supabase → Authentication → URL Configuration** in step:
+both `https://18plumbing.ca` and `https://www.18plumbing.ca` belong in Site URL
+and Redirect URLs, or confirmation links land on a rejected redirect.
+
+---
+
+## Conversion tracking
+
+[`lib/analytics.ts`](lib/analytics.ts) is the whole of it. `track()` sends a
+named event to GA4, and — only where a matching `AW-` label is configured — a
+second call to Google Ads, because Ads counts a conversion against `send_to`
+rather than the event name.
+
+| Event | Fired by | Ads label |
+| ----- | -------- | --------- |
+| `click_to_call` | tapping the phone number anywhere on the site | `NEXT_PUBLIC_ADS_CALL_LABEL` |
+| `click_to_text` | tapping "Text us" | `NEXT_PUBLIC_ADS_TEXT_LABEL` |
+| `lead_form_submit` | the contact form | `NEXT_PUBLIC_ADS_LEAD_LABEL` |
+| `priority_list_join` | free priority-list signup | `NEXT_PUBLIC_ADS_LEAD_LABEL` |
+| `plan_signup` | paid membership signup | `NEXT_PUBLIC_ADS_LEAD_LABEL` |
+| `inspection_booked` | a member booking their inspection | `NEXT_PUBLIC_ADS_LEAD_LABEL` |
+
+An unset label means the event reaches GA4 only. That is deliberate: sending it
+to some *other* action's label would inflate a number that bidding runs on.
+
+**Do not paste Google's gtag snippet into the site.** `components/Analytics.tsx`
+already emits exactly that tag from `NEXT_PUBLIC_GOOGLE_ADS_ID`. Two copies on a
+page means every conversion counted twice.
+
+Ad click ids (`gclid`, `gbraid`, `wbraid`) and UTMs are captured into
+`sessionStorage` on arrival, first touch wins, and read back at submit time —
+otherwise they are lost the moment someone navigates away from the landing
+page.

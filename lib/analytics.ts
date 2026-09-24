@@ -7,6 +7,7 @@
  *   NEXT_PUBLIC_GA4_ID                    e.g. G-XXXXXXXXXX
  *   NEXT_PUBLIC_GOOGLE_ADS_ID             e.g. AW-123456789
  *   NEXT_PUBLIC_ADS_CALL_LABEL            conversion label for a phone click
+ *   NEXT_PUBLIC_ADS_TEXT_LABEL            conversion label for a text click
  *   NEXT_PUBLIC_ADS_LEAD_LABEL            conversion label for a form submit
  */
 
@@ -14,6 +15,7 @@ export const analytics = {
   ga4Id: process.env.NEXT_PUBLIC_GA4_ID ?? "",
   adsId: process.env.NEXT_PUBLIC_GOOGLE_ADS_ID ?? "",
   adsCallLabel: process.env.NEXT_PUBLIC_ADS_CALL_LABEL ?? "",
+  adsTextLabel: process.env.NEXT_PUBLIC_ADS_TEXT_LABEL ?? "",
   adsLeadLabel: process.env.NEXT_PUBLIC_ADS_LEAD_LABEL ?? "",
 } as const;
 
@@ -41,6 +43,25 @@ export type ConversionEvent =
   | "inspection_booked";
 
 /**
+ * The Google Ads conversion label an event counts against.
+ *
+ * One label per conversion action, deliberately. Pointing two events at one
+ * label merges them in reporting, and if that action drives bidding the cheaper
+ * event quietly inflates the expensive one. An unset label means the event goes
+ * to GA4 only, which is the safer half-configured state.
+ */
+function adsLabelFor(event: ConversionEvent): string {
+  switch (event) {
+    case "click_to_call":
+      return analytics.adsCallLabel;
+    case "click_to_text":
+      return analytics.adsTextLabel;
+    default:
+      return analytics.adsLeadLabel;
+  }
+}
+
+/**
  * Sends an event to GA4 and, where a conversion label exists, to Google Ads.
  *
  * Safe to call anywhere: no-ops on the server, and when nothing is configured.
@@ -53,10 +74,7 @@ export function track(
 
   window.gtag("event", event, params);
 
-  const label =
-    event === "click_to_call" || event === "click_to_text"
-      ? analytics.adsCallLabel
-      : analytics.adsLeadLabel;
+  const label = adsLabelFor(event);
 
   // Google Ads counts a conversion only against send_to, so it needs its own
   // call with the AW- id and label.
