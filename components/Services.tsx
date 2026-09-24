@@ -1,4 +1,5 @@
-import { services, site } from "@/lib/site";
+import { PhoneLink } from "./CallButton";
+import { services } from "@/lib/site";
 import { serviceIcons } from "./Icons";
 
 export default function Services() {
@@ -38,7 +39,8 @@ export default function Services() {
             drains, fixtures, showers, bathtubs, toilets, lavatories, hot water tanks,
             kitchen sinks, dishwashers, cold water refrigerator lines, pumps, washing
             machines, water filtration, hose bibs and valves. If it carries water, we
-            can look at it &mdash; <a href={site.phoneHref}>give us a call</a>.
+            can look at it &mdash;{" "}
+            <PhoneLink location="services">give us a call</PhoneLink>.
           </p>
         </div>
       </div>

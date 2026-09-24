@@ -1,3 +1,4 @@
+import { PhoneLink } from "./CallButton";
 import { site } from "@/lib/site";
 import SocialLinks from "./SocialLinks";
 import { ClockIcon, MailIcon, PhoneIcon } from "./Icons";
@@ -9,7 +10,7 @@ export default function TopBar() {
         <div className="topbar__facts">
           <span className="topbar__fact">
             <PhoneIcon />
-            <a href={site.phoneHref}>{site.phone}</a>
+            <PhoneLink location="topbar" />
           </span>
           <span className="topbar__fact">
             <MailIcon />

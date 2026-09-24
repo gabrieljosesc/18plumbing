@@ -4,8 +4,8 @@ import {
   planOptions,
   pricing,
   priorityListBenefits,
-  site,
 } from "@/lib/site";
+import { PhoneLink } from "./CallButton";
 import PriorityListForm from "./PriorityListForm";
 import {
   CheckIcon,
@@ -126,7 +126,7 @@ export default function Membership({ signedIn }: { signedIn: boolean }) {
               )}
               <p className="tier__note">
                 No contract, cancel any time. We take payment over the phone once
-                you sign up &mdash; call <a href={site.phoneHref}>{site.phone}</a> if
+                you sign up &mdash; call <PhoneLink location="membership" /> if
                 you would rather just do it that way.
               </p>
             </div>

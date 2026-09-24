@@ -5,8 +5,7 @@ import { useFormStatus } from "react-dom";
 import { submitLead } from "@/app/actions";
 import { readAttribution, track } from "@/lib/analytics";
 import { initialAuthState } from "@/lib/auth-schema";
-import { site } from "@/lib/site";
-import { CallButton, TextButton } from "./CallButton";
+import { CallButton, PhoneLink, TextButton } from "./CallButton";
 import Field from "./Field";
 import FormStatus from "./FormStatus";
 import { CloseIcon, UploadIcon } from "./Icons";
@@ -280,7 +279,7 @@ export default function LeadForm({
 
         <SubmitButton />
         <p className="form-note">
-          Urgent? Call <a href={site.phoneHref}>{site.phone}</a> — open 24 hours.
+          Urgent? Call <PhoneLink location="lead_form" /> — open 24 hours.
         </p>
         <FormStatus state={state} />
       </form>

@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { site } from "@/lib/site";
 import Brand from "./Brand";
-import { PhoneIcon, UserIcon } from "./Icons";
+import { CallButton } from "./CallButton";
+import { UserIcon } from "./Icons";
 
 const NAV_LINKS = [
   { href: "/#services", label: "Services" },
@@ -124,10 +125,9 @@ export default function Header({
             <UserIcon />
             {signedIn ? "Account" : "Sign in"}
           </Link>
-          <a className="btn btn--primary" href={site.phoneHref}>
-            <PhoneIcon />
+          <CallButton className="btn btn--primary" location="header">
             {site.phone}
-          </a>
+          </CallButton>
         </div>
 
         {showNav && (

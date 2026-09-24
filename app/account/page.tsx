@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { signOut } from "@/app/actions";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import { CallButton, PhoneLink } from "@/components/CallButton";
 import InspectionForm from "@/components/InspectionForm";
 import TopBar from "@/components/TopBar";
 import {
@@ -148,10 +149,9 @@ export default async function AccountPage({
                     ? "Quote this number when you call and we will put you ahead of the general queue."
                     : "Your benefits switch on as soon as we have taken payment. Call us and we can do it now."}
                 </p>
-                <a className="btn btn--white btn--block" href={site.phoneHref}>
-                  <PhoneIcon />
+                <CallButton className="btn btn--white btn--block" location="account_card">
                   Call {site.phone}
-                </a>
+                </CallButton>
               </div>
 
               <div className="account-details">
@@ -180,7 +180,7 @@ export default async function AccountPage({
                 </dl>
                 <p className="account-details__note">
                   Need something changed? Call us on{" "}
-                  <a href={site.phoneHref}>{site.phone}</a> and we will update it.
+                  <PhoneLink location="account_details" /> and we will update it.
                 </p>
               </div>
             </section>
@@ -195,10 +195,9 @@ export default async function AccountPage({
                     it takes about two minutes, and your benefits start the moment
                     it goes through.
                   </p>
-                  <a className="btn btn--primary" href={site.phoneHref}>
-                    <PhoneIcon />
+                  <CallButton className="btn btn--primary" location="account_pending">
                     Call {site.phone}
-                  </a>
+                  </CallButton>
                 </section>
               )}
 

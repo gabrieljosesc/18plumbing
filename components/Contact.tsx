@@ -1,6 +1,6 @@
 import Link from "next/link";
 import LeadForm from "./LeadForm";
-import { CallButton, TextButton } from "./CallButton";
+import { CallButton, PhoneLink, TextButton } from "./CallButton";
 import { pricing, site } from "@/lib/site";
 import { ClockIcon, MailIcon, PhoneIcon, PinIcon } from "./Icons";
 
@@ -24,7 +24,7 @@ export default function Contact({ signedIn }: { signedIn: boolean }) {
               </span>
               <span>
                 <strong>Phone</strong>
-                <a href={site.phoneHref}>{site.phone}</a>
+                <PhoneLink location="contact" />
                 <small>Answered 24 hours a day</small>
               </span>
             </li>

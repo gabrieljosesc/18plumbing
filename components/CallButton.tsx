@@ -35,6 +35,36 @@ export function CallButton({
   );
 }
 
+/**
+ * The same tracked tel: link without the button styling, for phone numbers
+ * written into a sentence or a list.
+ *
+ * Every phone number on the site goes through this or CallButton. A plain <a>
+ * still places the call, so an untracked one looks fine and silently drops the
+ * conversion — which is the most expensive kind of bug to own on a site that
+ * buys clicks.
+ */
+export function PhoneLink({
+  className,
+  children,
+  location,
+}: {
+  className?: string;
+  children?: ReactNode;
+  /** Where on the site the click happened, e.g. "footer" — shows up in GA4. */
+  location: string;
+}) {
+  return (
+    <a
+      className={className}
+      href={site.phoneHref}
+      onClick={() => track("click_to_call", { location, phone: site.phone })}
+    >
+      {children ?? site.phone}
+    </a>
+  );
+}
+
 export function TextButton({
   className = "btn btn--outline",
   children,

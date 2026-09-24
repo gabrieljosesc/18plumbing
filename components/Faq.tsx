@@ -1,4 +1,5 @@
-import { faqs, site } from "@/lib/site";
+import { PhoneLink } from "./CallButton";
+import { faqs } from "@/lib/site";
 
 /**
  * Plain <details> accordion — no JS, and Google can read every answer whether
@@ -13,7 +14,7 @@ export default function Faq() {
           <h2>Straight answers</h2>
           <p>
             The things people ask before they call. If yours is not here, phone{" "}
-            <a href={site.phoneHref}>{site.phone}</a> and just ask.
+            <PhoneLink location="faq" /> and just ask.
           </p>
         </div>
 

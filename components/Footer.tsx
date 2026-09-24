@@ -1,3 +1,4 @@
+import { PhoneLink } from "./CallButton";
 import { site } from "@/lib/site";
 import Brand from "./Brand";
 import SocialLinks from "./SocialLinks";
@@ -59,7 +60,7 @@ export default function Footer() {
             <h4>Get in touch</h4>
             <ul>
               <li>
-                <a href={site.phoneHref}>{site.phone}</a>
+                <PhoneLink location="footer" />
               </li>
               <li>
                 <a href={site.emailHref}>{site.email}</a>
