@@ -322,6 +322,19 @@ rather than the event name.
 An unset label means the event reaches GA4 only. That is deliberate: sending it
 to some *other* action's label would inflate a number that bidding runs on.
 
+### How conversions actually reach Google Ads (as configured)
+
+**The three `AW-` label variables are intentionally unset in production, and
+must stay that way.** The Google Ads conversion actions are *imported from
+GA4* (Source: "Website (Google Analytics (GA4))"), keyed on the event names
+above. The chain is: site sends `click_to_call` → GA4 records it as a key
+event → Google Ads imports it.
+
+Setting a label as well would make the same tap count twice — once through
+GA4, once through the tag's `send_to` call — and Smart Bidding would optimise
+towards a conversion count that is double the truth. Switch to labels only if
+the GA4 imports are removed first.
+
 **Do not paste Google's gtag snippet into the site.** `components/Analytics.tsx`
 already emits exactly that tag from `NEXT_PUBLIC_GOOGLE_ADS_ID`. Two copies on a
 page means every conversion counted twice.
