@@ -1827,6 +1827,9 @@ p  { margin: 0 0 1rem; }
 /* --------------------------------------------------------------- thank you */
 .thanks-wrap { max-width: 600px; }
 .thanks-steps {
+  /* .auth-done centres its children as flex items, which shrink-wraps the
+     list to its longest word and collapses the 1fr column. Stretch it back. */
+  width: 100%;
   list-style: none;
   counter-reset: step;
   margin: 22px 0 26px;
@@ -1856,9 +1859,15 @@ p  { margin: 0 0 1rem; }
   display: grid;
   place-items: center;
 }
+/* The number spans both rows; the text stays in the second column. Without
+   the explicit placement the <span> wraps into the 34px number column. */
+.thanks-steps li::before { grid-row: 1 / span 2; }
+.thanks-steps li > strong,
+.thanks-steps li > span { grid-column: 2; }
 .thanks-steps strong { display: block; color: var(--ink); margin-bottom: 2px; }
 .thanks-steps span { font-size: .92rem; color: var(--muted); }
 .thanks-actions {
+  width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
