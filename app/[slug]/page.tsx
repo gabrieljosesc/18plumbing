@@ -141,8 +141,7 @@ export default async function LandingPage({
                 <ShieldIcon />
                 <span>
                   Licensed &amp; insured · <ClockIcon /> Open 24 hours ·{" "}
-                  <strong>${pricing.diagnostic} diagnostic</strong>, waived if we do
-                  the work
+                  <strong>${pricing.dispatchFee} dispatch fee</strong>
                 </span>
               </p>
             </div>

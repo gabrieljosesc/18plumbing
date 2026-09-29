@@ -77,8 +77,9 @@ Already in place:
 - **Sitemap and robots.txt** — generated at `/sitemap.xml` and `/robots.txt`
 - **FAQ section** — plain `<details>` elements, so Google reads every answer
   whether or not it is expanded
-- **Price anchor** — "$89 diagnostic, waived if we do the work" in the hero and
-  the FAQ
+- **Price anchor** — "$89 dispatch fee" in the hero, landing pages and FAQ. The
+  client confirmed the amount and asked for the earlier "waived if we do the
+  work" wording to go, so it is a flat fee now
 
 ### Reviews — the highest-leverage thing on this list
 
@@ -139,7 +140,7 @@ Almost all copy and business data sits in [`lib/site.ts`](lib/site.ts).
 | ----------------- | ------------------------------------------------------ |
 | `site`            | Name, phone, email, hours, social links, Google rating |
 | `services`        | The eight service cards                                |
-| `pricing`         | Diagnostic fee, plan prices, labour discount           |
+| `pricing`         | Dispatch fee, plan prices, labour discount             |
 | `planBenefits`    | The four paid-plan perks                               |
 | `priorityListBenefits` | What the free list gets you                       |
 | `faqs`            | FAQ copy, also emitted as FAQPage schema              |

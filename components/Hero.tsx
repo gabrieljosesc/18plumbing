@@ -17,8 +17,8 @@ export default function Hero() {
           </p>
 
           <p className="hero__anchor">
-            <strong>${pricing.diagnostic} diagnostic</strong> &mdash; waived if we do
-            the work. You approve the price before anything starts.
+            <strong>${pricing.dispatchFee} dispatch fee.</strong> You approve the
+            price before anything starts.
           </p>
 
           <div className="hero__actions">

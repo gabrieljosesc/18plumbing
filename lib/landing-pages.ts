@@ -68,7 +68,7 @@ export const landingPages: LandingPage[] = [
       },
       {
         heading: "What it costs",
-        body: `A ${`$${pricing.diagnostic}`} diagnostic to come out and find the fault, waived if you go ahead with the repair. You approve the price of the work before anything starts.`,
+        body: `A $${pricing.dispatchFee} dispatch fee to come out. You approve the price of the work before anything starts.`,
       },
     ],
     covers: [

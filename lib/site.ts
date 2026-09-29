@@ -182,8 +182,12 @@ export const services: Service[] = [
 /* ------------------------------------------------------------- pricing */
 
 export const pricing = {
-  /** Shown as the price anchor. Waived when the customer goes ahead with the job. */
-  diagnostic: 89,
+  /**
+   * Charged for coming out, whether or not work follows. The client dropped
+   * the earlier "waived if we do the work" wording on purpose, so do not
+   * reintroduce it in copy.
+   */
+  dispatchFee: 89,
   plan: {
     monthly: 15,
     annual: 180,
@@ -299,11 +303,11 @@ export type Faq = { question: string; answer: string };
 export const faqs: Faq[] = [
   {
     question: "Do you charge a call-out fee?",
-    answer: `We charge a $${pricing.diagnostic} diagnostic to come out and find the problem, and it is waived if you go ahead with the work.`,
+    answer: `Yes, a $${pricing.dispatchFee} dispatch fee to come out. You approve the price of any work before we start.`,
   },
   {
     question: "How much does a plumber cost in Toronto?",
-    answer: `It depends on the job, but you will never get a surprise. We quote the work before we start, so you approve the price first. The visit itself is $${pricing.diagnostic}, waived if we do the work.`,
+    answer: `It depends on the job, but you will never get a surprise. We quote the work before we start, so you approve the price first. The dispatch fee to come out is $${pricing.dispatchFee}.`,
   },
   {
     question: "Are you licensed and insured?",
