@@ -6,8 +6,10 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      // Member-only pages have nothing for a crawler and should not be indexed.
-      disallow: ["/account", "/auth/"],
+      // Member and staff pages have nothing for a crawler. /thank-you is only
+      // meaningful after a submission; indexed, searchers could land on a
+      // "conversion" page directly.
+      disallow: ["/account", "/admin", "/auth/", "/thank-you"],
     },
     sitemap: `${site.url}/sitemap.xml`,
   };

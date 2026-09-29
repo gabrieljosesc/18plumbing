@@ -3,7 +3,7 @@
 import { useActionState, useEffect, useRef, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { submitLead } from "@/app/actions";
-import { readAttribution, track } from "@/lib/analytics";
+import { readAttribution } from "@/lib/analytics";
 import { initialAuthState } from "@/lib/auth-schema";
 import { CallButton, PhoneLink, TextButton } from "./CallButton";
 import Field from "./Field";
@@ -91,16 +91,6 @@ export default function LeadForm({
   // Ad click ids were stashed on arrival; read them back at submit time.
   useEffect(() => setAttribution(readAttribution()), []);
 
-  useEffect(() => {
-    if (state.status === "success") {
-      track("lead_form_submit", { service: service ?? "general", source: sourceSlug });
-      setPreviews((current) => {
-        current.forEach((p) => URL.revokeObjectURL(p.url));
-        return [];
-      });
-    }
-  }, [state.status, service, sourceSlug]);
-
   // Release object URLs when the component goes away.
   useEffect(() => {
     return () => previews.forEach((p) => URL.revokeObjectURL(p.url));
@@ -131,20 +121,8 @@ export default function LeadForm({
     });
   }
 
-  if (state.status === "success") {
-    return (
-      <div className={compact ? "lead-card lead-card--compact" : "lead-card"}>
-        <div className="lead-done">
-          <span className="lead-done__mark" aria-hidden="true">
-            ✓
-          </span>
-          <h3>Request sent</h3>
-          <p>{state.message}</p>
-          <CallButton className="btn btn--primary btn--block" location="lead-success" />
-        </div>
-      </div>
-    );
-  }
+  // A successful submission redirects to /thank-you from the server action, so
+  // there is no success state to render here. Only errors come back.
 
   return (
     <div className={compact ? "lead-card lead-card--compact" : "lead-card"}>

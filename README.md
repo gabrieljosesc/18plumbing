@@ -61,8 +61,10 @@ selling the plan after a job. Adding Stripe later means changing how
 
 ### Activating a member
 
-Supabase → Table Editor → `profiles` → set `membership_status` to `active`.
-Their benefits and booking form appear on next page load.
+Sign in at `/admin`, find them under **Members**, set the status to **Active**,
+Save. Their benefits and booking form appear on their next page load. (The
+Supabase Table Editor still works too; the dashboard is just the same edit
+with a nicer front.)
 
 ---
 
@@ -238,10 +240,63 @@ noted above.
 - `0002_inspection_requests.sql` — bookings table and RLS
 - `0003_drop_quote_requests.sql` — **not applied**, see below
 - `0004_lock_down_trigger_functions.sql` — revokes RPC access to the trigger functions
+- `0005_priority_list_and_plans.sql` — free tier table, plan and pending status on profiles
+- `0006_carry_plan_into_profile.sql` — signup trigger copies the chosen plan across
+- `0007_leads_and_photos.sql` — lead form table and the private `lead-photos` bucket
+- `0008_admins.sql` — staff table, `is_admin()`, and the read/update policies behind `/admin`
 
 `0003` drops the leftover `quote_requests` table from the earlier quote-form
 version. It is empty and unused, but the sandbox blocked the `DROP`, so run it
 yourself when convenient: **Supabase → SQL Editor → paste → Run**.
+
+---
+
+## Admin dashboard
+
+**`/admin`** — leads, priority list, members and inspection bookings in one
+page, each row with a status control. Photos attached to leads open through
+one-hour signed URLs. Dates are shown, and typed, in Toronto time.
+
+### Who gets in
+
+Anyone listed in the `public.admins` table. That is the whole rule: not an
+email domain, not a flag on the user the browser could set. There is no policy
+that lets the app add rows to that table, so the only way to make an admin is
+the SQL editor:
+
+```sql
+insert into public.admins (user_id, note)
+select id, 'Owner login' from auth.users where email = 'admin@18plumbing.ca'
+on conflict (user_id) do nothing;
+```
+
+The login itself is an ordinary Supabase auth user, created in **Supabase →
+Authentication → Users → Add user → Create new user**, with *Auto Confirm User*
+ticked. It signs in through the normal `/login` form and is sent to `/admin`
+instead of `/account`. The signup trigger gives it a `profiles` row like any
+other user; the dashboard hides that row from the Members list.
+
+### What staff can do
+
+RLS policies in `0008_admins.sql` grant admins **select and update** on leads,
+the priority list, profiles and inspection requests, plus **select** on the
+`lead-photos` bucket. No delete, anywhere, on purpose: a wrong click cannot
+destroy a lead. Everything else on the site still runs under the original
+member-scoped policies.
+
+The dashboard changes only these columns: `leads.status`,
+`priority_list.status`, `profiles.membership_status`,
+`inspection_requests.status` and `inspection_requests.scheduled_for`.
+
+### Removing an admin
+
+```sql
+delete from public.admins where user_id = (select id from auth.users where email = '...');
+```
+
+Their session keeps working until it expires, but every admin query goes
+through `is_admin()` on the database, so the data disappears from their view
+immediately.
 
 ---
 
@@ -251,15 +306,21 @@ yourself when convenient: **Supabase → SQL Editor → paste → Run**.
 app/
   layout.tsx         Metadata, fonts, LocalBusiness structured data
   page.tsx           Marketing page composition
-  actions.ts         signUp / signIn / signOut / requestInspection
+  actions.ts         signUp / signIn / signOut / submitLead / joinPriorityList / requestInspection
   globals.css        Whole design system
   signup/, login/, account/
+  admin/             Staff dashboard (page.tsx) and its status actions
+  thank-you/         Post-submission page; the Google Ads conversion URL
   auth/confirm/      Email confirmation handler
   robots.ts, sitemap.ts
 components/          One component per page section, plus shared form pieces
 lib/
   site.ts            Business data and copy
   auth-schema.ts     Zod schemas, form-state types, value retention
+  admin.ts           isAdminUser / requireAdmin (server only)
+  admin-schema.ts    Status vocabularies shared by the dashboard and its actions
+  time.ts            Toronto-time formatting and parsing
+  analytics.ts       GA4 / Google Ads events
   supabase/          client.ts (browser), server.ts (SSR)
 middleware.ts        Session refresh + /account guard
 public/img/          Logo and job photos
@@ -335,6 +396,25 @@ Setting a label as well would make the same tap count twice — once through
 GA4, once through the tag's `send_to` call — and Smart Bidding would optimise
 towards a conversion count that is double the truth. Switch to labels only if
 the GA4 imports are removed first.
+
+### The thank-you page
+
+A successful lead form submission redirects to **`/thank-you`** (a real URL,
+`noindex`, disallowed in robots.txt). Two reasons:
+
+- **Google Ads can count it directly** as a page-visit conversion, with no GA4
+  import lag. In Ads: Goals → Conversions → + New conversion action → Website →
+  *Add a conversion action manually* → category **Submit lead form**, then in
+  Tag setup choose **Page load** with the URL rule
+  `https://www.18plumbing.ca/thank-you`. Value CA$40, Count One, Primary.
+- **It carries the lead id** (`?lead=<uuid>`), which `ThankYouTracker` uses as
+  a de-dupe key. The GA4 `lead_form_submit` event fires once per submission,
+  not once per refresh, and not at all for a URL typed in by hand.
+
+**Pick one source for the "Lead form" conversion in Ads, not both.** If the
+thank-you page is the Ads conversion, do not also import `lead_form_submit`
+from GA4, or every lead counts twice. The two call conversions are unaffected;
+they stay as GA4 imports.
 
 **Do not paste Google's gtag snippet into the site.** `components/Analytics.tsx`
 already emits exactly that tag from `NEXT_PUBLIC_GOOGLE_ADS_ID`. Two copies on a

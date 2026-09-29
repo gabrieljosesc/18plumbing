@@ -2,7 +2,8 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 /**
- * Refreshes the Supabase session cookie on every request and guards /account.
+ * Refreshes the Supabase session cookie on every request and guards /account
+ * and /admin.
  *
  * Server components cannot write cookies, so token refresh has to happen here —
  * without it a member would get logged out as soon as their token expired.
@@ -39,8 +40,8 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // Members only.
-  if (!user && pathname.startsWith("/account")) {
+  // Members only. /admin too: who counts as staff is decided on the page.
+  if (!user && (pathname.startsWith("/account") || pathname.startsWith("/admin"))) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("next", pathname);

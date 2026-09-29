@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { signOut } from "@/app/actions";
 import Footer from "@/components/Footer";
@@ -15,6 +16,7 @@ import {
   TankIcon,
 } from "@/components/Icons";
 import { planBenefits, planOptions, site } from "@/lib/site";
+import { isAdminUser } from "@/lib/admin";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
@@ -86,6 +88,7 @@ export default async function AccountPage({
   );
 
   const firstName = profile?.full_name?.split(" ")[0] ?? "there";
+  const isStaff = await isAdminUser(supabase, user.id);
 
   // Benefits unlock only once staff have taken payment and flipped the profile
   // to active. Until then the member sees what is coming, not a booking form.
@@ -100,6 +103,14 @@ export default async function AccountPage({
 
       <main className="account" id="main">
         <div className="wrap">
+          {isStaff && (
+            <div className="account-welcome" role="status">
+              <strong>Staff account.</strong>{" "}
+              <Link href="/admin">Open the dashboard</Link> to see leads, members
+              and bookings.
+            </div>
+          )}
+
           {params.welcome && (
             <div className="account-welcome" role="status">
               <strong>Email confirmed.</strong> Your account is set up &mdash; we

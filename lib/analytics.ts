@@ -43,6 +43,29 @@ export type ConversionEvent =
   | "inspection_booked";
 
 /**
+ * The gtag function, created early if gtag.js has not arrived yet.
+ *
+ * The loader script defines the same stub, so this is harmless once it has run
+ * and essential before: anything pushed onto dataLayer ahead of gtag.js is
+ * replayed when it loads. Without this, a tap on the phone number in the first
+ * second of a page load, which is exactly the ad-click behaviour we most want
+ * to count, would be dropped.
+ */
+function ensureGtag(): ((...args: GtagArgs) => void) | null {
+  if (typeof window === "undefined" || !isAnalyticsEnabled) return null;
+
+  if (typeof window.gtag !== "function") {
+    window.dataLayer = window.dataLayer ?? [];
+    window.gtag = function gtag() {
+      // eslint-disable-next-line prefer-rest-params
+      window.dataLayer!.push(arguments);
+    } as unknown as (...args: GtagArgs) => void;
+  }
+
+  return window.gtag;
+}
+
+/**
  * The Google Ads conversion label an event counts against.
  *
  * One label per conversion action, deliberately. Pointing two events at one
@@ -70,16 +93,17 @@ export function track(
   event: ConversionEvent,
   params: Record<string, unknown> = {},
 ): void {
-  if (typeof window === "undefined" || typeof window.gtag !== "function") return;
+  const gtag = ensureGtag();
+  if (!gtag) return;
 
-  window.gtag("event", event, params);
+  gtag("event", event, params);
 
   const label = adsLabelFor(event);
 
   // Google Ads counts a conversion only against send_to, so it needs its own
   // call with the AW- id and label.
   if (analytics.adsId && label) {
-    window.gtag("event", "conversion", {
+    gtag("event", "conversion", {
       send_to: `${analytics.adsId}/${label}`,
       ...params,
     });

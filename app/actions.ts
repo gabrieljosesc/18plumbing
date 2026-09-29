@@ -14,6 +14,7 @@ import {
   type AuthFormState,
 } from "@/lib/auth-schema";
 import { site } from "@/lib/site";
+import { isAdminUser } from "@/lib/admin";
 import { createClient } from "@/lib/supabase/server";
 
 const FALLBACK = `If this keeps happening, call ${site.phone} or email ${site.email}.`;
@@ -125,9 +126,9 @@ export async function submitLead(
   _previous: AuthFormState,
   formData: FormData,
 ): Promise<AuthFormState> {
-  if (formData.get("company")) {
-    return { status: "success", message: "Thanks — we have got it." };
-  }
+  // Honeypot filled in: send the bot where a person would go, minus the lead
+  // id, so nothing is stored and nothing is counted.
+  if (formData.get("company")) redirect("/thank-you");
 
   const parsed = leadSchema.safeParse({
     fullName: formData.get("fullName"),
@@ -186,7 +187,12 @@ export async function submitLead(
     photoPaths.push(path);
   }
 
+  // Generated here rather than read back: leads is insert-only under RLS, so
+  // .select() after the insert would be refused. The thank-you page needs it.
+  const leadId = crypto.randomUUID();
+
   const { error } = await supabase.from("leads").insert({
+    id: leadId,
     full_name: parsed.data.fullName,
     phone: parsed.data.phone,
     email: parsed.data.email,
@@ -208,17 +214,14 @@ export async function submitLead(
     };
   }
 
-  const photoNote =
-    photos.length > photoPaths.length
-      ? " (some photos could not be attached, but we have your details)"
-      : "";
-
-  return {
-    status: "success",
-    message:
-      `Got it${photoNote} — we will call you on ${parsed.data.phone} shortly. ` +
-      `If it is urgent, ring ${site.phone} and we will pick up.`,
-  };
+  // Hand off to a real page. Google Ads counts a visit to /thank-you as the
+  // conversion, and the lead id lets the GA4 event fire once per submission
+  // rather than once per page load.
+  const query = new URLSearchParams({ lead: leadId });
+  if (parsed.data.sourceSlug) query.set("s", parsed.data.sourceSlug);
+  if (parsed.data.service) query.set("svc", parsed.data.service);
+  if (photos.length > photoPaths.length) query.set("p", "1");
+  redirect(`/thank-you?${query}`);
 }
 
 /* ------------------------------------------------ free priority list */
@@ -311,7 +314,7 @@ export async function signIn(
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data: session, error } = await supabase.auth.signInWithPassword({
     email: parsed.data.email,
     password: parsed.data.password,
   });
@@ -328,7 +331,12 @@ export async function signIn(
   }
 
   const next = formData.get("next");
-  const target = typeof next === "string" && next.startsWith("/") ? next : "/account";
+  let target = typeof next === "string" && next.startsWith("/") ? next : "/account";
+
+  // Staff land on the dashboard rather than the member page.
+  if (target === "/account" && session.user && (await isAdminUser(supabase, session.user.id))) {
+    target = "/admin";
+  }
 
   revalidatePath("/", "layout");
   redirect(target);
