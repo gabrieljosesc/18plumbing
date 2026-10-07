@@ -1956,28 +1956,33 @@ p  { margin: 0 0 1rem; }
 @media (max-width: 900px) { .admin-stats { grid-template-columns: 1fr 1fr; } }
 
 /* ---------------------------------------------------------------- promo */
+/* A rounded box, not a capsule: the copy is long enough to wrap, and a 999px
+   radius on a two-line box eats the corners where the tag and text sit. The
+   tag flows inline with the text so wrapping stays natural at any width. */
 .promo {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  display: inline-block;
+  max-width: 100%;
   margin: 0 0 22px;
-  padding: 9px 16px 9px 9px;
-  border-radius: 999px;
+  padding: 11px 16px 12px;
+  border-radius: 12px;
   font-size: .92rem;
-  line-height: 1.35;
+  line-height: 1.55;
 }
 .promo__tag {
-  flex: none;
-  padding: 5px 11px;
+  display: inline-block;
+  vertical-align: 2px;
+  margin-right: 10px;
+  padding: 3px 10px;
   border-radius: 999px;
   font-family: var(--font-head);
   font-weight: 700;
-  font-size: .72rem;
+  font-size: .7rem;
   letter-spacing: .08em;
   text-transform: uppercase;
+  line-height: 1.5;
   background: var(--teal);
   color: #fff;
+  white-space: nowrap;
 }
 .promo--dark {
   background: rgba(255,255,255,.1);
@@ -1991,6 +1996,3 @@ p  { margin: 0 0 1rem; }
   color: var(--teal-700);
 }
 .promo--light strong { color: var(--teal-700); }
-@media (max-width: 520px) {
-  .promo { border-radius: var(--radius-sm); align-items: flex-start; }
-}
