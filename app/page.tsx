@@ -15,7 +15,7 @@ import Services from "@/components/Services";
 import TopBar from "@/components/TopBar";
 import TeamTrust from "@/components/TeamTrust";
 import TrustStrip from "@/components/TrustStrip";
-import { faqs } from "@/lib/site";
+import { activeFaqs } from "@/lib/promotion";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -25,16 +25,20 @@ import { createClient } from "@/lib/supabase/server";
  * URL. In the layout it was emitted on every page — including landing pages
  * that show a different set — which is both a duplicate-schema conflict and a
  * structured-data guideline violation.
+ *
+ * A function, not a constant: the list includes the promotion's entry only
+ * while the promotion runs, and a module-level constant would freeze that at
+ * server start.
  */
-const faqJsonLd = {
+const faqJsonLd = () => ({
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  mainEntity: faqs.map((faq) => ({
+  mainEntity: activeFaqs().map((faq) => ({
     "@type": "Question",
     name: faq.question,
     acceptedAnswer: { "@type": "Answer", text: faq.answer },
   })),
-};
+});
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -71,7 +75,7 @@ export default async function HomePage() {
       <script
         type="application/ld+json"
         // Static, built from lib/site.ts — no user input reaches this.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd()) }}
       />
     </>
   );

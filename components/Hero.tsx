@@ -1,5 +1,6 @@
 import { pricing, site } from "@/lib/site";
 import { CallButton, TextButton } from "./CallButton";
+import PromoBanner from "./PromoBanner";
 import { ClockIcon, PinIcon, ShieldIcon, StarIcon, Stars } from "./Icons";
 
 export default function Hero() {
@@ -7,6 +8,7 @@ export default function Hero() {
     <section className="hero">
       <div className="wrap hero__inner">
         <div>
+          <PromoBanner />
           <h1>
             Toronto&rsquo;s <em>licensed</em> plumbing service &mdash; day or night.
           </h1>

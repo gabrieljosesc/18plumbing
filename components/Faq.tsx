@@ -1,5 +1,5 @@
 import { PhoneLink } from "./CallButton";
-import { faqs } from "@/lib/site";
+import { activeFaqs } from "@/lib/promotion";
 
 /**
  * Plain <details> accordion — no JS, and Google can read every answer whether
@@ -19,7 +19,7 @@ export default function Faq() {
         </div>
 
         <div className="faq reveal">
-          {faqs.map((faq, index) => (
+          {activeFaqs().map((faq, index) => (
             <details className="faq__item" key={faq.question} open={index === 0}>
               <summary>
                 <span>{faq.question}</span>

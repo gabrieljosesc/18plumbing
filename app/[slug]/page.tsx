@@ -7,6 +7,7 @@ import { CallButton, TextButton } from "@/components/CallButton";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import LeadForm from "@/components/LeadForm";
+import PromoBanner from "@/components/PromoBanner";
 import ScrollReveal from "@/components/ScrollReveal";
 import TopBar from "@/components/TopBar";
 import { CheckIcon, ClockIcon, ShieldIcon, Stars } from "@/components/Icons";
@@ -21,6 +22,10 @@ import { createClient } from "@/lib/supabase/server";
 export function generateStaticParams() {
   return landingPageSlugs.map((slug) => ({ slug }));
 }
+
+// These pages are prerendered. Re-render them hourly so date-driven content
+// (the promotion banner and its FAQ) switches on and off without a deploy.
+export const revalidate = 3600;
 
 export async function generateMetadata({
   params,
@@ -117,6 +122,7 @@ export default async function LandingPage({
                 <span>{page.service}</span>
               </nav>
 
+              <PromoBanner />
               <h1>{page.h1}</h1>
               <p className="lp-hero__lede">{page.subhead}</p>
 

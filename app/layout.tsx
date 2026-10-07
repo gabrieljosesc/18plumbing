@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import Analytics from "@/components/Analytics";
+import { isPromotionLive, promotionOffer } from "@/lib/promotion";
 import { credentials, pricing, services, serviceAreas, site } from "@/lib/site";
 import "./globals.css";
 
@@ -51,8 +52,13 @@ export const viewport: Viewport = {
   themeColor: "#2C4478",
 };
 
-/** Google rich-result data for the business, built from lib/site.ts. */
-const localBusinessJsonLd = {
+/**
+ * Google rich-result data for the business, built from lib/site.ts.
+ *
+ * A function rather than a module-level constant because the promotion offer
+ * depends on today's date; a constant would freeze it at server start.
+ */
+const localBusinessJsonLd = () => ({
   "@context": "https://schema.org",
   "@type": "Plumber",
   "@id": `${site.url}/#business`,
@@ -119,16 +125,20 @@ const localBusinessJsonLd = {
       },
     })),
   },
-  makesOffer: {
-    "@type": "Offer",
-    name: "18 Plumbing membership",
-    description:
-      `Annual plumbing inspection, ${pricing.labourDiscount}% off labour, ` +
-      "a hot water tank flush and front-of-queue scheduling.",
-    price: String(pricing.plan.annual),
-    priceCurrency: "CAD",
-  },
-};
+  makesOffer: [
+    {
+      "@type": "Offer",
+      name: "18 Plumbing membership",
+      description:
+        `Annual plumbing inspection, ${pricing.labourDiscount}% off labour, ` +
+        "a hot water tank flush and front-of-queue scheduling.",
+      price: String(pricing.plan.annual),
+      priceCurrency: "CAD",
+    },
+    // Time-boxed: drops out of the markup by itself when the dates pass.
+    ...(isPromotionLive() ? [promotionOffer()] : []),
+  ],
+});
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -142,7 +152,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script
           type="application/ld+json"
           // Static objects built above — no user input reaches these.
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd()) }}
         />
       </body>
     </html>

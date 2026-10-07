@@ -134,6 +134,33 @@ HaveIBeenPwned. The security advisor flags this as off.
 
 ---
 
+## Promotions
+
+One is running: **10% off the first job for first-time clients, until
+31 December 2026.** It is defined in one place, [`lib/promotion.ts`](lib/promotion.ts),
+and everything else reads from there:
+
+- the pill above the headline on the homepage and every landing page
+- the note in the Contact section
+- an FAQ entry ("Do you have any offers on right now?"), in the visible FAQ
+  and in the FAQPage structured data
+- a schema.org `Offer` with `validFrom` / `validThrough` in the LocalBusiness
+  markup
+
+All of it is gated on `isPromotionLive()`, which compares the current time with
+the start and end dates **in Toronto time**. After the end date the banner, the
+FAQ entry and the Offer all disappear on their own. The landing pages are
+prerendered, so they carry `revalidate = 3600` and catch up within the hour; the
+homepage renders per request.
+
+To run the next promotion, change the numbers and dates in `promotion`. To take
+one down early, move `endsOn` to yesterday. Nothing else needs touching.
+
+The terms line ("Mention it when you book. Not combined with the membership
+discount.") was set by us as a sensible default, not by the client — confirm it.
+
+---
+
 ## Where the content lives
 
 Almost all copy and business data sits in [`lib/site.ts`](lib/site.ts).

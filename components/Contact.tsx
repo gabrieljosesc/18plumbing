@@ -1,5 +1,6 @@
 import Link from "next/link";
 import LeadForm from "./LeadForm";
+import PromoBanner from "./PromoBanner";
 import { CallButton, PhoneLink, TextButton } from "./CallButton";
 import { pricing, site } from "@/lib/site";
 import { ClockIcon, MailIcon, PhoneIcon, PinIcon } from "./Icons";
@@ -16,6 +17,8 @@ export default function Contact({ signedIn }: { signedIn: boolean }) {
             are a member, have your member number handy and we will get you booked in
             ahead of the queue.
           </p>
+
+          <PromoBanner variant="light" />
 
           <ul className="contact-list">
             <li>
