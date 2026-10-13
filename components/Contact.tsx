@@ -3,7 +3,7 @@ import LeadForm from "./LeadForm";
 import PromoBanner from "./PromoBanner";
 import { CallButton, PhoneLink, TextButton } from "./CallButton";
 import { pricing, site } from "@/lib/site";
-import { ClockIcon, MailIcon, PhoneIcon, PinIcon } from "./Icons";
+import { ClockIcon, FacebookIcon, MailIcon, PhoneIcon, PinIcon } from "./Icons";
 
 export default function Contact({ signedIn }: { signedIn: boolean }) {
   return (
@@ -59,6 +59,23 @@ export default function Contact({ signedIn }: { signedIn: boolean }) {
                 <strong>Hours</strong>
                 <p>{site.hours}</p>
                 <small>Seven days a week</small>
+              </span>
+            </li>
+            <li>
+              <span className="ci">
+                <FacebookIcon />
+              </span>
+              <span>
+                <strong>Facebook</strong>
+                <a
+                  href={site.social.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${site.name} on Facebook (opens in a new tab)`}
+                >
+                  facebook.com/18plumbing
+                </a>
+                <small>Recent jobs, photos and updates</small>
               </span>
             </li>
           </ul>
