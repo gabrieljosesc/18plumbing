@@ -38,12 +38,14 @@ export const promotions: readonly Promotion[] = [
     id: "halloween-2026",
     // Asked for on Oct 20 Manila time, which was still Oct 19 in Toronto.
     startsOn: "2026-10-19",
-    endsOn: "2026-10-31",
+    // Extended from Oct 31 at the client's request. A Christmas promotion is
+    // meant to follow on Dec 1; add it above this entry when its terms arrive.
+    endsOn: "2026-11-30",
     headline: "Halloween special: 10% off",
-    blurb: "any job booked by October 31",
+    blurb: "any job booked by November 30",
     terms: "Mention it when you book. Not combined with other offers or the membership discount.",
     faqAnswer:
-      "Yes. It is our Halloween special: 10% off any job booked by October 31, 2026. " +
+      "Yes. It is our Halloween special: 10% off any job booked by November 30, 2026. " +
       "Mention it when you book. It cannot be combined with other offers or the membership discount.",
     theme: "halloween",
     tagEmoji: "🎃",

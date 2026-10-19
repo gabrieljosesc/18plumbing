@@ -141,12 +141,12 @@ are configured:
 
 | | Dates (Toronto) | Offer |
 | --- | --- | --- |
-| `halloween-2026` | 19 Oct – 31 Oct 2026 | 10% off any job booked by Oct 31 |
+| `halloween-2026` | 19 Oct – 30 Nov 2026 | 10% off any job booked by Nov 30 (extended from Oct 31; a Christmas promotion is planned from 1 Dec) |
 | `first-job-2026` | 7 Oct – 31 Dec 2026 | 10% off the first job for first-time clients |
 
 **Only one shows at a time.** The list is in precedence order and the first one
-live today wins, so Halloween takes over for its two weeks and the first-job
-offer comes back on 1 November. Two "10% off" banners at once would only make
+live today wins, so Halloween takes over while it runs and the first-job
+offer only shows when nothing above it is live. Two "10% off" banners at once would only make
 people ask whether they stack.
 
 Whichever is active drives everything:
