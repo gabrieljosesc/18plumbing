@@ -134,6 +134,31 @@ HaveIBeenPwned. The security advisor flags this as off.
 
 ---
 
+## Service pages
+
+Every service has its own page, all driven by [`lib/landing-pages.ts`](lib/landing-pages.ts):
+
+| URL | Role |
+| --- | --- |
+| `/services` | Index: one card per service with a photo |
+| `/emergency-plumber-toronto`, `/drain-cleaning-toronto`, `/hot-water-tank-installation-toronto`, `/toilet-repair-toronto`, `/faucet-installation-toronto`, `/dishwasher-installation-toronto` | The original ad landing pages — tightly matched to a search, and the URLs the Google Ads campaigns point at. **Do not rename.** |
+| `/bathroom-plumbing-toronto`, `/kitchen-plumbing-toronto`, `/water-filtration-toronto`, `/pumps-and-valves-toronto` | Broader hub pages so every homepage service card has somewhere to go |
+
+The **Services** dropdown in the header, the footer's Services list, and the
+"See details" links on the homepage cards all come from
+[`lib/service-nav.ts`](lib/service-nav.ts), a deliberately tiny module (labels and
+slugs only) so the client-side header does not bundle the page copy. Add a page
+to `landingPages`, add its slug there, done.
+
+Each page shows a "Jobs like yours" photo strip. Which photos go where is
+`PHOTOS_BY_SLUG` in `lib/landing-pages.ts`; alt text and captions are reused
+from the homepage gallery so a photo is described the same way everywhere.
+All photos are the client's own, in `public/img/`. To use new ones from the
+Facebook page, download them, drop them in `public/img/`, add them to
+`gallery` in `lib/site.ts` (with honest alt text) and to `PHOTO_SIZES`.
+
+---
+
 ## Promotions
 
 Defined in one place, [`lib/promotion.ts`](lib/promotion.ts), as a list. Two

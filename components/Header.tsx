@@ -1,14 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { serviceNav } from "@/lib/service-nav";
 import { site } from "@/lib/site";
 import Brand from "./Brand";
 import { CallButton } from "./CallButton";
 import { UserIcon } from "./Icons";
 
+// "Services" is not here: it is a dropdown, rendered first, built from
+// lib/service-nav.ts.
 const NAV_LINKS = [
-  { href: "/#services", label: "Services" },
   { href: "/#about", label: "About" },
   { href: "/#work", label: "Our Work" },
   { href: "/#membership", label: "Membership" },
@@ -28,6 +30,13 @@ export default function Header({
   const [navOpen, setNavOpen] = useState(false);
   const [stuck, setStuck] = useState(false);
   const [activeId, setActiveId] = useState<string>("");
+  const [servicesOpen, setServicesOpen] = useState(false);
+  const servicesRef = useRef<HTMLLIElement>(null);
+
+  const closeMenus = () => {
+    setServicesOpen(false);
+    setNavOpen(false);
+  };
 
   // Drop a shadow under the header once the page has scrolled at all.
   useEffect(() => {
@@ -60,7 +69,10 @@ export default function Header({
   // Escape closes the mobile panel; widening past the breakpoint resets it.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setNavOpen(false);
+      if (e.key === "Escape") {
+        setNavOpen(false);
+        setServicesOpen(false);
+      }
     };
     const onResize = () => {
       if (window.innerWidth > 860) setNavOpen(false);
@@ -72,6 +84,16 @@ export default function Header({
       window.removeEventListener("resize", onResize);
     };
   }, []);
+
+  // A click anywhere outside the Services menu closes it.
+  useEffect(() => {
+    if (!servicesOpen) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (!servicesRef.current?.contains(e.target as Node)) setServicesOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [servicesOpen]);
 
   return (
     <header className={stuck ? "header is-stuck" : "header"}>
@@ -85,6 +107,49 @@ export default function Header({
             aria-label="Primary"
           >
             <ul>
+              <li
+                className={servicesOpen ? "nav__dropdown is-open" : "nav__dropdown"}
+                ref={servicesRef}
+                onMouseEnter={() => setServicesOpen(true)}
+                onMouseLeave={() => setServicesOpen(false)}
+              >
+                <button
+                  type="button"
+                  className={
+                    activeId === "services" ? "nav__dropdown-btn is-active" : "nav__dropdown-btn"
+                  }
+                  aria-expanded={servicesOpen}
+                  aria-controls="servicesMenu"
+                  onClick={() => setServicesOpen((open) => !open)}
+                >
+                  Services
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="m6 9 6 6 6-6" />
+                  </svg>
+                </button>
+                <ul className="nav__menu" id="servicesMenu" aria-label="Services">
+                  {serviceNav.map((item) => (
+                    <li key={item.slug}>
+                      <Link href={`/${item.slug}`} onClick={closeMenus}>
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                  <li className="nav__menu-all">
+                    <Link href="/services" onClick={closeMenus}>
+                      All services
+                    </Link>
+                  </li>
+                </ul>
+              </li>
               {NAV_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link

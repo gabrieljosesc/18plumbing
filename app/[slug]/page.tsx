@@ -14,6 +14,7 @@ import { CheckIcon, ClockIcon, ShieldIcon, Stars } from "@/components/Icons";
 import {
   getLandingPage,
   landingPageSlugs,
+  photosFor,
   relatedPages,
 } from "@/lib/landing-pages";
 import { pricing, reviews, serviceAreas, site } from "@/lib/site";
@@ -83,9 +84,10 @@ export default async function LandingPage({
       "@type": "BreadcrumbList",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Home", item: `${site.url}/` },
+        { "@type": "ListItem", position: 2, name: "Services", item: `${site.url}/services` },
         {
           "@type": "ListItem",
-          position: 2,
+          position: 3,
           name: page.h1,
           item: `${site.url}/${page.slug}`,
         },
@@ -106,6 +108,8 @@ export default async function LandingPage({
       : []),
   ];
 
+  const photos = photosFor(page.slug);
+
   return (
     <>
       <TopBar />
@@ -118,6 +122,8 @@ export default async function LandingPage({
             <div>
               <nav className="lp-crumbs" aria-label="Breadcrumb">
                 <Link href="/">Home</Link>
+                <span aria-hidden="true">/</span>
+                <Link href="/services">Services</Link>
                 <span aria-hidden="true">/</span>
                 <span>{page.service}</span>
               </nav>
@@ -212,6 +218,32 @@ export default async function LandingPage({
             </aside>
           </div>
         </section>
+
+        {/* --------------------------------------------------- photos */}
+        {photos.length > 0 && (
+          <section className="section section--alt">
+            <div className="wrap">
+              <div className="section-head section-head--center reveal">
+                <span className="eyebrow">Recent work</span>
+                <h2>Jobs like yours</h2>
+              </div>
+              <div className="lp-photos">
+                {photos.map((photo) => (
+                  <figure className="lp-photo reveal" key={photo.src}>
+                    <Image
+                      src={photo.src}
+                      alt={photo.alt}
+                      width={photo.width}
+                      height={photo.height}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    />
+                    <figcaption>{photo.caption}</figcaption>
+                  </figure>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* -------------------------------------------------- reviews */}
         <section className="section section--dark">

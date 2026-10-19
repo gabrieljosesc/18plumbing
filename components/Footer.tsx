@@ -1,23 +1,18 @@
+import Link from "next/link";
 import { PhoneLink } from "./CallButton";
+import { serviceNav } from "@/lib/service-nav";
 import { site } from "@/lib/site";
 import Brand from "./Brand";
 import SocialLinks from "./SocialLinks";
 
-const SERVICE_LINKS = [
-  "Drains & blockages",
-  "Faucets & fixtures",
-  "Bathrooms",
-  "Kitchens",
-  "Hot water tanks",
-  "Appliance hook-ups",
-];
-
+// Absolute so they work from the service pages too, not just the homepage.
 const COMPANY_LINKS = [
-  { href: "#about", label: "About us" },
-  { href: "#work", label: "Our work" },
-  { href: "#reviews", label: "Reviews" },
-  { href: "#area", label: "Service area" },
-  { href: "#contact", label: "Contact" },
+  { href: "/services", label: "All services" },
+  { href: "/#about", label: "About us" },
+  { href: "/#work", label: "Our work" },
+  { href: "/#reviews", label: "Reviews" },
+  { href: "/#area", label: "Service area" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 export default function Footer() {
@@ -37,9 +32,9 @@ export default function Footer() {
           <div>
             <h4>Services</h4>
             <ul>
-              {SERVICE_LINKS.map((label) => (
-                <li key={label}>
-                  <a href="#services">{label}</a>
+              {serviceNav.map((item) => (
+                <li key={item.slug}>
+                  <Link href={`/${item.slug}`}>{item.label}</Link>
                 </li>
               ))}
             </ul>

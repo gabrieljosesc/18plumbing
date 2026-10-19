@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { PhoneLink } from "./CallButton";
+import { slugForService } from "@/lib/service-nav";
 import { services } from "@/lib/site";
 import { serviceIcons } from "./Icons";
 
@@ -18,6 +20,7 @@ export default function Services() {
         <div className="services-grid">
           {services.map((service) => {
             const Icon = serviceIcons[service.icon];
+            const href = slugForService(service.id);
             return (
               <article className="service-card reveal" key={service.id}>
                 <span className="service-card__icon">{Icon ? <Icon /> : null}</span>
@@ -28,6 +31,11 @@ export default function Services() {
                     <li key={point}>{point}</li>
                   ))}
                 </ul>
+                {href && (
+                  <Link className="service-card__more" href={`/${href}`}>
+                    See details &rarr;
+                  </Link>
+                )}
               </article>
             );
           })}
