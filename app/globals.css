@@ -1996,3 +1996,17 @@ p  { margin: 0 0 1rem; }
   color: var(--teal-700);
 }
 .promo--light strong { color: var(--teal-700); }
+
+/* Halloween treatment for the promo box: pumpkin tag and a warm tint. The
+   shape, type and spacing are the shared .promo rules above. */
+.promo--halloween .promo__tag { background: #E4661B; }
+.promo--dark.promo--halloween {
+  background: rgba(228,102,27,.16);
+  border-color: rgba(228,102,27,.6);
+}
+.promo--light.promo--halloween {
+  background: #FDEEDC;
+  border-color: #F0B07A;
+  color: #8A3E0B;
+}
+.promo--light.promo--halloween strong { color: #8A3E0B; }

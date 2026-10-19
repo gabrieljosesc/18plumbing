@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import Analytics from "@/components/Analytics";
-import { isPromotionLive, promotionOffer } from "@/lib/promotion";
+import { promotionOffer } from "@/lib/promotion";
 import { credentials, pricing, services, serviceAreas, site } from "@/lib/site";
 import "./globals.css";
 
@@ -58,7 +58,11 @@ export const viewport: Viewport = {
  * A function rather than a module-level constant because the promotion offer
  * depends on today's date; a constant would freeze it at server start.
  */
-const localBusinessJsonLd = () => ({
+const localBusinessJsonLd = () => {
+  // Null when no promotion is live.
+  const offer = promotionOffer();
+
+  return {
   "@context": "https://schema.org",
   "@type": "Plumber",
   "@id": `${site.url}/#business`,
@@ -136,9 +140,10 @@ const localBusinessJsonLd = () => ({
       priceCurrency: "CAD",
     },
     // Time-boxed: drops out of the markup by itself when the dates pass.
-    ...(isPromotionLive() ? [promotionOffer()] : []),
+    ...(offer ? [offer] : []),
   ],
-});
+  };
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

@@ -136,28 +136,38 @@ HaveIBeenPwned. The security advisor flags this as off.
 
 ## Promotions
 
-One is running: **10% off the first job for first-time clients, until
-31 December 2026.** It is defined in one place, [`lib/promotion.ts`](lib/promotion.ts),
-and everything else reads from there:
+Defined in one place, [`lib/promotion.ts`](lib/promotion.ts), as a list. Two
+are configured:
 
-- the pill above the headline on the homepage and every landing page
+| | Dates (Toronto) | Offer |
+| --- | --- | --- |
+| `halloween-2026` | 19 Oct – 31 Oct 2026 | 10% off any job booked by Oct 31 |
+| `first-job-2026` | 7 Oct – 31 Dec 2026 | 10% off the first job for first-time clients |
+
+**Only one shows at a time.** The list is in precedence order and the first one
+live today wins, so Halloween takes over for its two weeks and the first-job
+offer comes back on 1 November. Two "10% off" banners at once would only make
+people ask whether they stack.
+
+Whichever is active drives everything:
+
+- the box above the headline on the homepage and every landing page
 - the note in the Contact section
-- an FAQ entry ("Do you have any offers on right now?"), in the visible FAQ
-  and in the FAQPage structured data
-- a schema.org `Offer` with `validFrom` / `validThrough` in the LocalBusiness
-  markup
+- the first FAQ entry ("Do you have any offers on right now?"), visible and in
+  the FAQPage structured data
+- a schema.org `Offer` with `validFrom` / `validThrough` on the LocalBusiness
 
-All of it is gated on `isPromotionLive()`, which compares the current time with
-the start and end dates **in Toronto time**. After the end date the banner, the
-FAQ entry and the Offer all disappear on their own. The landing pages are
-prerendered, so they carry `revalidate = 3600` and catch up within the hour; the
-homepage renders per request.
+All of it is gated on the dates **in Toronto time**, so each promotion
+switches itself on and off. The landing pages are prerendered and carry
+`revalidate = 3600`, so they catch up within the hour; the homepage renders
+per request.
 
-To run the next promotion, change the numbers and dates in `promotion`. To take
-one down early, move `endsOn` to yesterday. Nothing else needs touching.
+To run a new one, add an entry (above the long-running ones if it should take
+precedence). To end one early, move its `endsOn` to yesterday. A `theme` adds a
+visual treatment; `halloween` is the only one so far.
 
-The terms line ("Mention it when you book. Not combined with the membership
-discount.") was set by us as a sensible default, not by the client — confirm it.
+The terms lines were set by us as sensible defaults, not by the client —
+confirm them.
 
 ---
 
