@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { landingPageSlugs } from "@/lib/landing-pages";
+import { landingPages } from "@/lib/landing-pages";
 import { site } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -9,11 +9,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 1,
     },
-    // Landing pages carry the commercial intent, so they rank just under home.
-    ...landingPageSlugs.map((slug) => ({
-      url: `${site.url}/${slug}`,
+    // Service pages carry the commercial intent, so they rank just under home;
+    // area pages a notch below.
+    ...landingPages.map((page) => ({
+      url: `${site.url}/${page.slug}`,
       changeFrequency: "monthly" as const,
-      priority: 0.8,
+      priority: page.kind === "service" ? 0.8 : 0.7,
     })),
     {
       url: `${site.url}/services`,

@@ -6,6 +6,11 @@ import { ClockIcon, PinIcon, ShieldIcon, StarIcon, Stars } from "./Icons";
 export default function Hero() {
   return (
     <section className="hero">
+      {/* React hoists these into <head>. The background image is the largest
+          thing on the page; without a preload the browser only discovers it
+          after the stylesheet has been parsed. */}
+      <link rel="preload" as="image" href="/img/hero-675.jpg" media="(max-width: 720px)" fetchPriority="high" />
+      <link rel="preload" as="image" href="/img/hero-1200.jpg" media="(min-width: 721px)" fetchPriority="high" />
       <div className="wrap hero__inner">
         <div>
           <PromoBanner />

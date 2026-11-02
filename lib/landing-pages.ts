@@ -14,6 +14,8 @@ export type LandingPage = {
   kind: "service" | "area";
   /** Prefilled into the lead form's service field, for ad attribution. */
   service: string;
+  /** Area pages: the place name, for breadcrumbs and headings. */
+  area?: string;
 
   /** <title> and H1 — keep them close, Ads checks for it. */
   metaTitle: string;
@@ -39,6 +41,101 @@ export type LandingPage = {
 };
 
 const AREAS = serviceAreas.join(", ");
+
+/** Pixel sizes of the photos in public/img, so next/image can reserve space. */
+const PHOTO_SIZES: Record<string, [number, number]> = {
+  "gallery-bathroom-suite": [900, 1200],
+  "gallery-dishwasher-new": [900, 1200],
+  "gallery-drain-machine": [900, 1200],
+  "gallery-drain-stack": [640, 640],
+  "gallery-faucet-chrome": [1066, 1168],
+  "gallery-floating-vanity": [900, 1200],
+  "gallery-hot-water-tank": [512, 640],
+  "gallery-kitchen-island": [900, 1200],
+  "gallery-marble-shower": [900, 1200],
+  "gallery-renovation": [1200, 900],
+  "gallery-rough-in": [900, 1200],
+  "gallery-toilet-flange": [900, 1200],
+  "gallery-water-filtration": [900, 1200],
+};
+
+/**
+ * Builds a service-area page from the handful of things that differ between
+ * areas. The structure is shared; the words about the place are not.
+ */
+function areaPage(input: {
+  slug: string;
+  area: string;
+  neighbourhoods: string;
+  about: string;
+  typical: string;
+  image: string;
+}): LandingPage[] {
+  const { slug, area, neighbourhoods, about, typical, image } = input;
+  return [
+    {
+      slug,
+      kind: "area",
+      service: "General",
+      area,
+      // "Plumber Mississauga | Licensed & Open 24/7" + " | 18 Plumbing" = 56.
+      metaTitle: `Plumber ${area} | Licensed & Open 24/7`,
+      metaDescription: `Licensed, insured plumber serving ${area}: ${neighbourhoods.replace(/ and /g, ", ")}. Drains, toilets, faucets, hot water tanks and emergencies, open 24 hours. Call ${site.phone}.`.slice(0, 158),
+      h1: `Plumber in ${area}`,
+      subhead: `Licensed and insured plumbing for houses, townhouses and small commercial units across ${area}, with a phone that is answered 24 hours a day.`,
+      highlights: [
+        "Open 24 hours, 7 days",
+        "Licensed & insured",
+        `Across ${area}`,
+        "No travel surcharge",
+      ],
+      sections: [
+        {
+          heading: `Plumbing in ${area}`,
+          body: about,
+        },
+        {
+          heading: "What we are usually called for",
+          body: `${typical} Installation, maintenance and repair of anything that carries water: drains, fixtures, showers, tubs, toilets, hot water tanks, kitchen sinks, dishwashers, fridge lines, pumps, filtration, hose bibs and valves. If it is on the truck list, it is on the ${area} list.`,
+        },
+        {
+          heading: "Getting to you",
+          body: `We are based in Toronto and work across ${area} every week. For an emergency we tell you a realistic arrival time on the phone, not an optimistic one, and for planned work we book a window that suits you. The $${pricing.dispatchFee} dispatch fee is the same as everywhere we serve, with no extra charge for distance.`,
+        },
+      ],
+      covers: [
+        `Emergency plumber in ${area}`,
+        "Drain cleaning & blocked drains",
+        "Toilet repair & installation",
+        "Faucets, fixtures & shut-off valves",
+        "Hot water tank installation",
+        "Bathroom & kitchen plumbing",
+        "Dishwasher & appliance hook-ups",
+        "Sump pumps & hose bibs",
+      ],
+      faqs: [
+        {
+          question: `Do you cover all of ${area}?`,
+          answer: `Yes, including ${neighbourhoods}. If you are right on the edge of the city, call and we will tell you straight away whether we can get to you.`,
+        },
+        {
+          question: `Is there a travel charge for ${area}?`,
+          answer: `No. The dispatch fee is the same $${pricing.dispatchFee} as everywhere we serve, and you approve the price of any work before it starts.`,
+        },
+        {
+          question: `How quickly can you get to ${area} in an emergency?`,
+          answer: "It depends on the time of day and the traffic, so we will not quote a number we cannot keep. Describe what is happening and we will tell you whether it can wait until morning and, if not, when we can realistically be there.",
+        },
+      ],
+      image: {
+        src: `/img/${image}.jpg`,
+        alt: gallery.find((photo) => photo.src === `/img/${image}.jpg`)?.alt ?? "18 Plumbing at work",
+        width: PHOTO_SIZES[image]?.[0] ?? 900,
+        height: PHOTO_SIZES[image]?.[1] ?? 1200,
+      },
+    },
+  ];
+}
 
 export const landingPages: LandingPage[] = [
   {
@@ -110,7 +207,7 @@ export const landingPages: LandingPage[] = [
     slug: "drain-cleaning-toronto",
     kind: "service",
     service: "Drains & blockages",
-    metaTitle: "Drain Cleaning Toronto | Blocked Drain Repair",
+    metaTitle: "Drain Cleaning Toronto | Blocked Drains",
     metaDescription:
       `Slow, gurgling or backed-up drains cleared properly in Toronto and the GTA. Licensed and insured, open 24 hours. Call ${site.phone}.`,
     h1: "Drain cleaning in Toronto",
@@ -170,9 +267,9 @@ export const landingPages: LandingPage[] = [
     slug: "hot-water-tank-installation-toronto",
     kind: "service",
     service: "Hot water tank",
-    metaTitle: "Hot Water Tank Installation & Replacement | Toronto",
+    metaTitle: "Hot Water Tank Installation Toronto",
     metaDescription:
-      `Hot water tank supply, installation and replacement across Toronto and the GTA. Lines run properly and pressure tested. Licensed and insured — call ${site.phone}.`,
+      `Hot water tank installation and replacement across Toronto and the GTA, supply lines run properly and tested. Licensed and insured. Call ${site.phone}.`,
     h1: "Hot water tank installation and replacement",
     subhead:
       "Supplied, installed and pressure tested — with the supply lines run properly rather than bodged to fit.",
@@ -234,7 +331,7 @@ export const landingPages: LandingPage[] = [
     slug: "toilet-repair-toronto",
     kind: "service",
     service: "Bathroom (toilet, tub, shower, vanity)",
-    metaTitle: "Toilet Repair & Installation Toronto | Licensed Plumber",
+    metaTitle: "Toilet Repair & Installation Toronto",
     metaDescription:
       `Running, leaking, blocked or wobbling toilets repaired or replaced across Toronto and the GTA. Licensed and insured, open 24 hours. Call ${site.phone}.`,
     h1: "Toilet repair and installation in Toronto",
@@ -294,7 +391,7 @@ export const landingPages: LandingPage[] = [
     slug: "faucet-installation-toronto",
     kind: "service",
     service: "Faucets & fixtures",
-    metaTitle: "Faucet & Fixture Installation Toronto | Licensed Plumber",
+    metaTitle: "Faucet & Fixture Installation Toronto",
     metaDescription:
       `Kitchen and bathroom faucets, valves and fixtures supplied, installed and repaired across Toronto and the GTA. Licensed and insured — call ${site.phone}.`,
     h1: "Faucet and fixture installation",
@@ -354,7 +451,7 @@ export const landingPages: LandingPage[] = [
     slug: "dishwasher-installation-toronto",
     kind: "service",
     service: "Appliance hook-up (dishwasher, washer, fridge line)",
-    metaTitle: "Dishwasher & Appliance Hook-Up Toronto | Licensed Plumber",
+    metaTitle: "Dishwasher & Appliance Hook-Up Toronto",
     metaDescription:
       `Dishwashers, washing machines and fridge water lines connected, levelled and leak tested across Toronto and the GTA. Call ${site.phone}.`,
     h1: "Dishwasher and appliance hook-ups",
@@ -418,9 +515,9 @@ export const landingPages: LandingPage[] = [
     slug: "bathroom-plumbing-toronto",
     kind: "service",
     service: "Bathroom (toilet, tub, shower, vanity)",
-    metaTitle: "Bathroom Plumbing Toronto | Showers, Tubs, Vanities & Toilets",
+    metaTitle: "Bathroom Plumbing Toronto | Showers & Tubs",
     metaDescription:
-      `Bathroom plumbing across Toronto and the GTA: showers, bathtubs, vanities and toilets installed, replaced or roughed in for a renovation. Licensed and insured. Call ${site.phone}.`,
+      `Showers, tubs, vanities and toilets installed, replaced or roughed in for a renovation. Toronto and the GTA, licensed and insured. Call ${site.phone}.`,
     h1: "Bathroom plumbing in Toronto",
     subhead:
       "Showers, tubs, vanities and toilets installed, swapped or roughed in for a renovation, and finished so nothing is leaking behind the tile.",
@@ -482,9 +579,9 @@ export const landingPages: LandingPage[] = [
     slug: "kitchen-plumbing-toronto",
     kind: "service",
     service: "Kitchen (sink, disposal, island, fridge line)",
-    metaTitle: "Kitchen Plumbing Toronto | Sinks, Disposals & Island Prep Sinks",
+    metaTitle: "Kitchen Plumbing Toronto | Sinks & Disposals",
     metaDescription:
-      `Kitchen plumbing across Toronto and the GTA: sinks, garbage disposals, island prep sinks and fridge water lines, from a tap swap to a full kitchen rough-in. Call ${site.phone}.`,
+      `Kitchen sinks, garbage disposals, island prep sinks and fridge lines, from a tap swap to a full rough-in. Toronto and the GTA. Call ${site.phone}.`,
     h1: "Kitchen plumbing in Toronto",
     subhead:
       "Sinks, disposals, island prep sinks and fridge lines, from a single tap swap to the rough-in for a brand new kitchen.",
@@ -546,9 +643,9 @@ export const landingPages: LandingPage[] = [
     slug: "water-filtration-toronto",
     kind: "service",
     service: "Water filtration",
-    metaTitle: "Water Filtration Installation Toronto | Under-Sink & Whole-Home",
+    metaTitle: "Water Filtration Installation Toronto",
     metaDescription:
-      `Under-sink and whole-home water filtration supplied and installed across Toronto and the GTA, plumbed in with a bypass so cartridge changes take minutes. Call ${site.phone}.`,
+      `Under-sink and whole-home water filtration installed with a bypass so cartridge changes take minutes. Toronto and the GTA. Call ${site.phone}.`,
     h1: "Water filtration in Toronto",
     subhead:
       "Under-sink and whole-home systems supplied and installed, plumbed into the line with a proper bypass so changing a cartridge takes minutes, not a plumber.",
@@ -609,9 +706,9 @@ export const landingPages: LandingPage[] = [
     slug: "pumps-and-valves-toronto",
     kind: "service",
     service: "Pumps, hose bibs & valves",
-    metaTitle: "Pump, Hose Bib & Valve Installation Toronto | Licensed Plumber",
+    metaTitle: "Pumps, Hose Bibs & Valves | Toronto Plumber",
     metaDescription:
-      `Sump and utility pumps, frost-free outdoor taps and shut-off valves installed or replaced across Toronto and the GTA, including the ones that seized when you needed them. Call ${site.phone}.`,
+      `Sump pumps, frost-free hose bibs and shut-off valves installed or replaced across Toronto and the GTA. Licensed and insured. Call ${site.phone}.`,
     h1: "Pumps, hose bibs and valves",
     subhead:
       "Sump and utility pumps, outdoor taps and shut-off valves installed or replaced, including the ones that seized the last time you needed them.",
@@ -669,6 +766,82 @@ export const landingPages: LandingPage[] = [
       height: 1200,
     },
   },
+
+  // ---------------------------------------------------------------- areas
+  // One page per city outside Toronto proper. "plumber <city>" is its own
+  // search with its own local pack, and a Toronto page does not rank for it.
+  // Each is written about the place, not stamped from a template: the
+  // neighbourhoods are real, the housing-stock notes are general and true.
+  ...areaPage({
+    slug: "plumber-north-york",
+    area: "North York",
+    neighbourhoods: "Willowdale, Don Mills, Bayview Village, York Mills, Downsview and Lawrence Manor",
+    about:
+      "North York is a mix of post-war bungalows and side-splits, the newer houses that replaced many of them, and townhouse blocks off the main arterials. The older homes are where we see galvanized supply lines reaching the end of their life, original cast iron stacks, and basements that were finished without anyone thinking about a floor drain. The newer builds bring different calls: PEX manifolds, pressure-reducing valves and tankless or power-vented water heaters that need a plumber who has seen them before.",
+    typical:
+      "Main drain backups in older streets, hot water tank swaps, and bathroom renovations where the rough-in has to be redone to current code.",
+    image: "gallery-drain-machine",
+  }),
+  ...areaPage({
+    slug: "plumber-scarborough",
+    area: "Scarborough",
+    neighbourhoods: "Agincourt, Guildwood, Birch Cliff, Wexford, Malvern, Cliffside and West Hill",
+    about:
+      "Much of Scarborough was built out from the 1950s through the 1970s, and that shows up in the plumbing: original copper that has done sixty years of service, cast iron drains with root intrusion from mature trees, and hose bibs that were never frost-free. There is also a lot of newer infill and townhouse construction, plus small commercial units along the main roads, which is squarely the low-rise commercial work we do.",
+    typical:
+      "Drain cleaning and camera inspections, replacing seized shut-off valves, and toilet and faucet swaps in homes being refreshed for sale.",
+    image: "gallery-toilet-flange",
+  }),
+  ...areaPage({
+    slug: "plumber-etobicoke",
+    area: "Etobicoke",
+    neighbourhoods: "Mimico, Long Branch, Islington, The Kingsway, Alderwood, Rexdale and Humber Bay",
+    about:
+      "Etobicoke runs from lakefront condos and townhouses in Mimico and Humber Bay to large older lots in The Kingsway and Islington, with the post-war suburbs in between. We work the low-rise side of all of it: houses, townhouses and small commercial. The older homes near the lake often have lower water pressure and ageing supply lines; the newer townhouse blocks tend to call about appliance hook-ups, sump pumps and shared-wall noise from water hammer.",
+    typical:
+      "Water heater installations, kitchen and bathroom fixture swaps, and sump pump replacements before the spring thaw.",
+    image: "gallery-hot-water-tank",
+  }),
+  ...areaPage({
+    slug: "plumber-vaughan",
+    area: "Vaughan",
+    neighbourhoods: "Woodbridge, Maple, Thornhill, Kleinburg, Concord and Vellore Village",
+    about:
+      "Most of Vaughan's housing went up from the 1980s onward, so the plumbing is newer but not trouble-free: PEX and copper mixes, finished basements with bathrooms that need a proper ejector pump, and builder-grade fixtures that are now due for replacement across whole subdivisions at once. Larger homes mean longer hot water runs and more fixtures on the same tank, which is where recirculation and tank sizing conversations start.",
+    typical:
+      "Basement bathroom rough-ins, hot water tank upgrades, water filtration installs and swapping out builder-grade faucets and toilets.",
+    image: "gallery-bathroom-suite",
+  }),
+  ...areaPage({
+    slug: "plumber-markham",
+    area: "Markham",
+    neighbourhoods: "Unionville, Thornhill, Milliken, Cornell, Markham Village, Berczy and Wismer",
+    about:
+      "Markham pairs some genuinely old streets in Unionville and Markham Village with large newer communities like Cornell, Berczy and Wismer. In the older homes we are dealing with original drains and valves; in the newer ones it is mostly finishing work, upgrades and the first round of replacements as fifteen-year-old fixtures and tanks reach the end of their life. We also look after small commercial units in the plazas along the main roads.",
+    typical:
+      "Hot water tank replacements, kitchen renovations with island sinks, water filtration systems and toilet and faucet upgrades.",
+    image: "gallery-kitchen-island",
+  }),
+  ...areaPage({
+    slug: "plumber-richmond-hill",
+    area: "Richmond Hill",
+    neighbourhoods: "Oak Ridges, Bayview Hill, Mill Pond, Jefferson, Westbrook and Rouge Woods",
+    about:
+      "Richmond Hill stretches from the older centre around Mill Pond up to Oak Ridges and Jefferson, where the houses are newer and the lots are larger. Homes on the moraine side often have sump pumps doing real work, and we see a lot of finished basements with bathrooms that depend on an ejector pump nobody has looked at in years. Closer to the centre it is the usual older-home list: drains, valves, and fixtures being replaced during renovations.",
+    typical:
+      "Sump and ejector pump replacements, bathroom renovation rough-ins, hot water tanks and whole-home filtration.",
+    image: "gallery-rough-in",
+  }),
+  ...areaPage({
+    slug: "plumber-mississauga",
+    area: "Mississauga",
+    neighbourhoods: "Port Credit, Streetsville, Erin Mills, Cooksville, Meadowvale, Clarkson and Lorne Park",
+    about:
+      "Mississauga is the biggest of the areas we cover and the most varied: older lakeside streets in Port Credit, Clarkson and Lorne Park, the village core of Streetsville, and wide 1970s-to-1990s suburbs in Erin Mills and Meadowvale. The older homes bring drain and supply-line work; the suburbs bring the full replacement cycle of tanks, toilets and faucets, plus a steady run of dishwasher and fridge-line hook-ups as kitchens get redone.",
+    typical:
+      "Drain cleaning, hot water tank installations, appliance hook-ups and kitchen and bathroom fixture replacements.",
+    image: "gallery-faucet-chrome",
+  }),
 ];
 
 /** Neighbourhood pages reuse the same machinery — add entries here later. */
@@ -688,22 +861,6 @@ export type PagePhoto = {
   height: number;
 };
 
-/** Pixel sizes of the photos in public/img, so next/image can reserve space. */
-const PHOTO_SIZES: Record<string, [number, number]> = {
-  "gallery-bathroom-suite": [900, 1200],
-  "gallery-dishwasher-new": [900, 1200],
-  "gallery-drain-machine": [900, 1200],
-  "gallery-drain-stack": [640, 640],
-  "gallery-faucet-chrome": [1066, 1168],
-  "gallery-floating-vanity": [900, 1200],
-  "gallery-hot-water-tank": [512, 640],
-  "gallery-kitchen-island": [900, 1200],
-  "gallery-marble-shower": [900, 1200],
-  "gallery-renovation": [1200, 900],
-  "gallery-rough-in": [900, 1200],
-  "gallery-toilet-flange": [900, 1200],
-  "gallery-water-filtration": [900, 1200],
-};
 
 /**
  * Which gallery photos belong on which page. Alt text and captions come from
@@ -720,6 +877,13 @@ const PHOTOS_BY_SLUG: Record<string, string[]> = {
   "kitchen-plumbing-toronto": ["gallery-kitchen-island", "gallery-dishwasher-new", "gallery-faucet-chrome"],
   "water-filtration-toronto": ["gallery-water-filtration", "gallery-hot-water-tank", "gallery-rough-in"],
   "pumps-and-valves-toronto": ["gallery-rough-in", "gallery-hot-water-tank", "gallery-drain-stack"],
+  "plumber-north-york": ["gallery-drain-machine", "gallery-hot-water-tank", "gallery-bathroom-suite"],
+  "plumber-scarborough": ["gallery-toilet-flange", "gallery-drain-machine", "gallery-faucet-chrome"],
+  "plumber-etobicoke": ["gallery-hot-water-tank", "gallery-dishwasher-new", "gallery-floating-vanity"],
+  "plumber-vaughan": ["gallery-bathroom-suite", "gallery-rough-in", "gallery-water-filtration"],
+  "plumber-markham": ["gallery-kitchen-island", "gallery-hot-water-tank", "gallery-marble-shower"],
+  "plumber-richmond-hill": ["gallery-rough-in", "gallery-renovation", "gallery-water-filtration"],
+  "plumber-mississauga": ["gallery-faucet-chrome", "gallery-drain-machine", "gallery-dishwasher-new"],
 };
 
 /** The gallery has no entry for this one; it is kept for the drain pages. */
@@ -745,7 +909,18 @@ export const landingPageSlugs = landingPages.map((page) => page.slug);
 
 /** Cross-links shown at the bottom of each landing page. */
 export function relatedPages(slug: string, limit = 3): LandingPage[] {
-  return landingPages.filter((page) => page.slug !== slug).slice(0, limit);
+  const current = getLandingPage(slug);
+  // An area page sends people to services; a service page to other services.
+  return landingPages
+    .filter((page) => page.slug !== slug && page.kind === "service")
+    .slice(current?.kind === "area" ? 1 : 0, limit + (current?.kind === "area" ? 1 : 0));
+}
+
+/** The area pages, in the order the service-area list shows them. */
+export const areaPages = landingPages.filter((page) => page.kind === "area");
+
+export function areaPageFor(areaName: string): LandingPage | undefined {
+  return areaPages.find((page) => page.area === areaName);
 }
 
 export { AREAS as serviceAreaList };

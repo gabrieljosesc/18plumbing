@@ -19,15 +19,18 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
+// Google shows roughly 60 characters of a title and 155 of a description;
+// anything past that is cut mid-word in the result. Keep both under.
 const description =
-  "18 Plumbing is a licensed and insured Toronto plumber serving low-rise " +
-  "residential and commercial properties. Drains, fixtures, toilets, hot water " +
-  `tanks, dishwashers and more. Open 24 hours — call ${site.phone}.`;
+  "Licensed, insured Toronto plumber, open 24 hours. Drains, toilets, faucets, " +
+  `hot water tanks and appliance hook-ups across the GTA. Call ${site.phone}.`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} | Licensed Plumber in Toronto & the GTA — 24/7 Service`,
+    // Keyword first, brand last: "Plumber Toronto" is what people type.
+    default: `Plumber Toronto | Licensed & Insured, 24/7 | ${site.name}`,
+    // Adds 14 characters to every page title, so page titles stay under ~46.
     template: `%s | ${site.name}`,
   },
   description,
@@ -35,13 +38,20 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: site.name,
-    title: `${site.name} | Licensed Plumber in Toronto & the GTA`,
+    title: `Plumber Toronto | Licensed & Insured, 24/7 | ${site.name}`,
     description,
     url: site.url,
     locale: "en_CA",
-    images: [{ url: "/img/logo.jpg", width: 556, height: 556, alt: `${site.name} logo` }],
+    // 1200x630 is what Facebook, LinkedIn and Google's link previews expect;
+    // the square logo rendered as a tiny thumbnail.
+    images: [{ url: "/img/og.jpg", width: 1200, height: 630, alt: "18 Plumbing at work" }],
   },
   twitter: { card: "summary_large_image" },
+  // Search Console's meta-tag verification. Set the token in Vercel and the
+  // tag appears; unset, nothing is emitted.
+  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    ? { verification: { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION } }
+    : {}),
   // No icons block on purpose. app/favicon.ico, app/icon.png and
   // app/apple-icon.png are picked up by Next's file convention and get
   // hashed URLs for cache busting. Declaring icons here would override

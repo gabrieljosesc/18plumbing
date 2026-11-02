@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { areaPageFor } from "@/lib/landing-pages";
 import { serviceAreas } from "@/lib/site";
 import { CheckIcon } from "./Icons";
 
@@ -14,12 +16,15 @@ export default function ServiceArea() {
             we can get to you.
           </p>
           <ul className="area__list">
-            {serviceAreas.map((area) => (
-              <li key={area}>
-                <CheckIcon />
-                {area}
-              </li>
-            ))}
+            {serviceAreas.map((area) => {
+              const page = areaPageFor(area);
+              return (
+                <li key={area}>
+                  <CheckIcon />
+                  {page ? <Link href={`/${page.slug}`}>{area}</Link> : area}
+                </li>
+              );
+            })}
           </ul>
         </div>
 

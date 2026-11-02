@@ -159,6 +159,44 @@ Facebook page, download them, drop them in `public/img/`, add them to
 
 ---
 
+## SEO
+
+Baseline taken 2 Nov 2026 with Lighthouse (mobile) against production:
+homepage performance **48**, LCP **8.2 s**, SEO 92 with the meta description
+over length; drain page performance 76. Organic Google traffic in the prior 30
+days: 61 sessions, 1 conversion (GA4).
+
+What was changed that day:
+
+- **Titles and descriptions** on every page brought under Google's display
+  limits (~60 / ~155 characters). The layout's title template appends
+  " | 18 Plumbing", so page-level titles must stay under about 46.
+- **Hero image**: the 317 KB `hero.jpg` is no longer referenced. The CSS uses
+  `hero-1200.jpg` (153 KB) and, under 720px, `hero-675.jpg` (52 KB); `Hero.tsx`
+  preloads whichever applies, because a CSS background is otherwise discovered
+  late and was the largest-paint element.
+- **Social preview** is `og.jpg` (1200x630) instead of the square logo.
+- **Area pages**: `/plumber-north-york`, `-scarborough`, `-etobicoke`,
+  `-vaughan`, `-markham`, `-richmond-hill`, `-mississauga`, built by
+  `areaPage()` in `lib/landing-pages.ts` from real neighbourhood names and
+  general, true housing-stock notes. "plumber <city>" is its own search with
+  its own local pack; a Toronto page does not rank for it. The Service Area
+  section and the sitemap link to them.
+- Review count on the site matched to Google (11).
+- `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` emits the Search Console meta tag.
+
+**There was no Search Console property for this site.** Until one exists
+nobody can see impressions, positions or indexing. Verify
+`https://www.18plumbing.ca/` (Google Analytics verification works, since the
+GA4 tag is on the site), then submit `/sitemap.xml`.
+
+Things that move rankings and are not code: Google Business Profile accuracy
+(the phone number there was still the old one), getting from 11 reviews to
+30+, and consistent name/address/phone on Facebook, Yelp, HomeStars and
+Yellow Pages.
+
+---
+
 ## Promotions
 
 Defined in one place, [`lib/promotion.ts`](lib/promotion.ts), as a list. Two

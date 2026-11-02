@@ -14,10 +14,10 @@ import { site } from "@/lib/site";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
-  title: "Plumbing Services in Toronto & the GTA",
+  title: "Plumbing Services Toronto & GTA",
   description:
-    "Everything 18 Plumbing does, from emergency callouts and drain cleaning to bathrooms, kitchens, hot water tanks, " +
-    `appliance hook-ups, water filtration and valves. Licensed and insured. Call ${site.phone}.`,
+    "Every plumbing service we offer in Toronto and the GTA, from emergency callouts " +
+    `and drains to bathrooms, kitchens and hot water tanks. Call ${site.phone}.`,
   alternates: { canonical: "/services" },
 };
 

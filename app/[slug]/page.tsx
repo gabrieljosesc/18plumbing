@@ -84,7 +84,9 @@ export default async function LandingPage({
       "@type": "BreadcrumbList",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Home", item: `${site.url}/` },
-        { "@type": "ListItem", position: 2, name: "Services", item: `${site.url}/services` },
+        page.kind === "area"
+          ? { "@type": "ListItem", position: 2, name: "Service area", item: `${site.url}/#area` }
+          : { "@type": "ListItem", position: 2, name: "Services", item: `${site.url}/services` },
         {
           "@type": "ListItem",
           position: 3,
@@ -123,9 +125,13 @@ export default async function LandingPage({
               <nav className="lp-crumbs" aria-label="Breadcrumb">
                 <Link href="/">Home</Link>
                 <span aria-hidden="true">/</span>
-                <Link href="/services">Services</Link>
+                {page.kind === "area" ? (
+                  <Link href="/#area">Service area</Link>
+                ) : (
+                  <Link href="/services">Services</Link>
+                )}
                 <span aria-hidden="true">/</span>
-                <span>{page.service}</span>
+                <span>{page.area ?? page.service}</span>
               </nav>
 
               <PromoBanner />
@@ -278,7 +284,7 @@ export default async function LandingPage({
             <div className="wrap">
               <div className="section-head section-head--center reveal">
                 <span className="eyebrow">Questions</span>
-                <h2>{page.service} — common questions</h2>
+                <h2>{page.area ?? page.service} — common questions</h2>
               </div>
               <div className="faq reveal">
                 {page.faqs.map((faq, index) => (
@@ -320,7 +326,7 @@ export default async function LandingPage({
           <div className="wrap">
             <div className="section-head section-head--center reveal">
               <span className="eyebrow">More</span>
-              <h2>Other things we do</h2>
+              <h2>{page.kind === "area" ? `What we do in ${page.area}` : "Other things we do"}</h2>
             </div>
             <div className="lp-related">
               {related.map((other) => (
