@@ -23,11 +23,16 @@ export default function Analytics() {
 
   return (
     <>
+      {/* lazyOnload, not afterInteractive: the two gtag bundles cost about
+          1.3 s of main-thread time on a mid-range phone, which was most of
+          the page's blocking time. Nothing is lost by waiting for window
+          load: track() creates the dataLayer stub itself, so a tap on the
+          phone number before gtag.js arrives is queued and replayed. */}
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${primaryId}`}
-        strategy="afterInteractive"
+        strategy="lazyOnload"
       />
-      <Script id="gtag-init" strategy="afterInteractive">
+      <Script id="gtag-init" strategy="lazyOnload">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
