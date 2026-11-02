@@ -166,6 +166,21 @@ homepage performance **48**, LCP **8.2 s**, SEO 92 with the meta description
 over length; drain page performance 76. Organic Google traffic in the prior 30
 days: 61 sessions, 1 conversion (GA4).
 
+After the same day's changes, measured the same way: homepage **67**, LCP
+**3.0 s**, SEO **100** on every page; drain page 76 / 100; area pages 76 / 100.
+Best Practices stays at 77 everywhere because Google Ads sets a third-party
+cookie. Remaining blocking time (~1.1–1.2 s) is the site's own JavaScript.
+
+Two of the fixes were not obvious and are worth knowing about:
+
+- **Metadata was being streamed into the body.** Next 15 does this for any
+  user agent it thinks runs JavaScript, Googlebot included. Google renders and
+  copes; Lighthouse, Facebook's and LinkedIn's link scrapers, Bing and most SEO
+  tools read raw HTML and saw no title or description. `htmlLimitedBots: /.*/`
+  in `next.config.ts` turns it off. Do not remove it.
+- **The Google tag now loads after window load** (`lazyOnload`). Safe because
+  `track()` creates the dataLayer stub itself, so early taps are queued.
+
 What was changed that day:
 
 - **Titles and descriptions** on every page brought under Google's display
